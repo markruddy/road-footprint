@@ -176,8 +176,13 @@ $(document).ready(function () {
 
 
 <!-- rnb-text-begin -->
-<div id="packages" class="section level2">
-<h2>packages</h2>
+<p>Data on road lengths in Great Britain can be found from the <a href="https://www.gov.uk/government/statistical-data-sets/rdl02-road-lengths-kms">Office for National Statistics (ONS)</a>. This is provided as road type by GB Local Authority from 2005 to 2015. A supplement also lists road lengths, with various data gaps, dating back to 1914.</p>
+<p>The Ordnance Survey also holds information on road length in their <a href="https://www.ordnancesurvey.co.uk/business-and-government/products/os-open-roads.html">OS Open Roads</a> product - available under the Open Government Licence (<a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL</a>). This could potentially allow any analysis to be broken down into smaller geographic areas than that achievable from the ONS data. But OS Open Roads only incldues Motorways, A-roads, B-roads.</p>
+<p>Both datasets require assumptions on the width’s of different road types. With the additional road types present in the ONS data I decided to go with that as a basis for estimating road area.</p>
+<div id="ons-road-length" class="section level2">
+<h2>ONS road length</h2>
+<p><a href="https://www.gov.uk/government/statistical-data-sets/rdl02-road-lengths-kms">Office for National Statistics (ONS)</a> are downloadable as .ods files.</p>
+<p>There’s not much to guide the user in what is included Unfortunately there’s little in the way of meta-data for the dataset.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkeGwpXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmBgYCJ9 -->
@@ -186,12 +191,6 @@ library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
-<p>Data on road lengths in Great Britain can be found from the <a href="https://www.gov.uk/government/statistical-data-sets/rdl02-road-lengths-kms">Office for National Statistics</a>. There’s also information on roads direct from the Ordnance Survey. The <a href="https://www.ordnancesurvey.co.uk/business-and-government/products/os-open-roads.html">OS Open Roads</a> product is available under the Open Government Licence (<a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL</a>) licence. This dataset only incldues Motorways, A-roads, B-roads, however.</p>
-<p>Over the period 2005 to 2015 there’s information on the</p>
-<p>cover the period are downloadable as .ods files. There’s not much to guide the user in what is included Unfortunately there’s little in the way of meta-data for the dataset.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2V0d2QoKVxuXG5gYGAifQ== -->
@@ -207,7 +206,7 @@ library(tidyverse)</code></pre>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUm9hZCBzdXJmYWNlOiBpbXBvcnQgYW5kIGV4cGxvcmUiCmF1dGhvcjogIk1hcmsgUnVkZHkiCmRhdGU6ICIyMDE3LTAyLTI3IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgoKIyMgcGFja2FnZXMKCmBgYHtyIGxvYWQtcGFja2FnZXN9CmxpYnJhcnkocmVhZHhsKQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgojIyBJbnRyb2R1Y3Rpb24KCkRhdGEgb24gcm9hZCBsZW5ndGhzIGluIEdyZWF0IEJyaXRhaW4gY2FuIGJlIGZvdW5kIGZyb20gdGhlIFtPZmZpY2UgZm9yIE5hdGlvbmFsIFN0YXRpc3RpY3NdKGh0dHBzOi8vd3d3Lmdvdi51ay9nb3Zlcm5tZW50L3N0YXRpc3RpY2FsLWRhdGEtc2V0cy9yZGwwMi1yb2FkLWxlbmd0aHMta21zKS4gVGhlcmUncyBhbHNvIGluZm9ybWF0aW9uIG9uIHJvYWRzIGRpcmVjdCBmcm9tIHRoZSBPcmRuYW5jZSBTdXJ2ZXkuIFRoZSBbT1MgT3BlbiBSb2Fkc10oaHR0cHM6Ly93d3cub3JkbmFuY2VzdXJ2ZXkuY28udWsvYnVzaW5lc3MtYW5kLWdvdmVybm1lbnQvcHJvZHVjdHMvb3Mtb3Blbi1yb2Fkcy5odG1sKSBwcm9kdWN0IGlzIGF2YWlsYWJsZSB1bmRlciB0aGUgT3BlbiBHb3Zlcm5tZW50IExpY2VuY2UgKFtPR0xdKGh0dHA6Ly93d3cubmF0aW9uYWxhcmNoaXZlcy5nb3YudWsvZG9jL29wZW4tZ292ZXJubWVudC1saWNlbmNlL3ZlcnNpb24vMy8pKSBsaWNlbmNlLiBUaGlzIGRhdGFzZXQgb25seSBpbmNsZHVlcyBNb3RvcndheXMsIEEtcm9hZHMsIEItcm9hZHMsIGhvd2V2ZXIuIAoKT3ZlciB0aGUgcGVyaW9kIDIwMDUgdG8gMjAxNSB0aGVyZSdzIGluZm9ybWF0aW9uIG9uIHRoZSAKCgpjb3ZlciB0aGUgcGVyaW9kICBhcmUgZG93bmxvYWRhYmxlIGFzIC5vZHMgZmlsZXMuIFRoZXJlJ3Mgbm90IG11Y2ggdG8gZ3VpZGUgdGhlIHVzZXIgaW4gd2hhdCBpcyBpbmNsdWRlZCAgIFVuZm9ydHVuYXRlbHkgdGhlcmUncyBsaXR0bGUgaW4gdGhlIHdheSBvZiBtZXRhLWRhdGEgZm9yIHRoZSBkYXRhc2V0LgoKYGBge3IgcmVhZC1kYXRhfQpnZXR3ZCgpCnNldHdkKCIuLi9kYXRhIikKZGF0YS5maWxlcyA8LSBsaXN0LmZpbGVzKHBhdHRlcm49IioueGxzIikKCgoKYGBgCgpSb2FkIGxlbmd0aCBlc3RpbWF0ZXMgaW4gR3JlYXQgQnJpdGFpbiBkdXJpbmcgMjAxMy4=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUm9hZCBzdXJmYWNlOiBpbXBvcnQgYW5kIGV4cGxvcmUiCmF1dGhvcjogIk1hcmsgUnVkZHkiCmRhdGU6ICIyMDE3LTAyLTI3IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpEYXRhIG9uIHJvYWQgbGVuZ3RocyBpbiBHcmVhdCBCcml0YWluIGNhbiBiZSBmb3VuZCBmcm9tIHRoZSBbT2ZmaWNlIGZvciBOYXRpb25hbCBTdGF0aXN0aWNzIChPTlMpXShodHRwczovL3d3dy5nb3YudWsvZ292ZXJubWVudC9zdGF0aXN0aWNhbC1kYXRhLXNldHMvcmRsMDItcm9hZC1sZW5ndGhzLWttcykuIFRoaXMgaXMgcHJvdmlkZWQgYXMgcm9hZCB0eXBlIGJ5IEdCIExvY2FsIEF1dGhvcml0eSBmcm9tIDIwMDUgdG8gMjAxNS4gQSBzdXBwbGVtZW50IGFsc28gbGlzdHMgcm9hZCBsZW5ndGhzLCB3aXRoIHZhcmlvdXMgZGF0YSBnYXBzLCBkYXRpbmcgYmFjayB0byAxOTE0LgoKVGhlIE9yZG5hbmNlIFN1cnZleSBhbHNvIGhvbGRzIGluZm9ybWF0aW9uIG9uIHJvYWQgbGVuZ3RoIGluIHRoZWlyIFtPUyBPcGVuIFJvYWRzXShodHRwczovL3d3dy5vcmRuYW5jZXN1cnZleS5jby51ay9idXNpbmVzcy1hbmQtZ292ZXJubWVudC9wcm9kdWN0cy9vcy1vcGVuLXJvYWRzLmh0bWwpIHByb2R1Y3QgLSBhdmFpbGFibGUgdW5kZXIgdGhlIE9wZW4gR292ZXJubWVudCBMaWNlbmNlIChbT0dMXShodHRwOi8vd3d3Lm5hdGlvbmFsYXJjaGl2ZXMuZ292LnVrL2RvYy9vcGVuLWdvdmVybm1lbnQtbGljZW5jZS92ZXJzaW9uLzMvKSkuIFRoaXMgY291bGQgcG90ZW50aWFsbHkgYWxsb3cgYW55IGFuYWx5c2lzIHRvIGJlIGJyb2tlbiBkb3duIGludG8gc21hbGxlciBnZW9ncmFwaGljIGFyZWFzIHRoYW4gdGhhdCBhY2hpZXZhYmxlIGZyb20gdGhlIE9OUyBkYXRhLiBCdXQgT1MgT3BlbiBSb2FkcyBvbmx5IGluY2xkdWVzIE1vdG9yd2F5cywgQS1yb2FkcywgQi1yb2Fkcy4KCkJvdGggZGF0YXNldHMgcmVxdWlyZSBhc3N1bXB0aW9ucyBvbiB0aGUgd2lkdGgncyBvZiBkaWZmZXJlbnQgcm9hZCB0eXBlcy4gV2l0aCB0aGUgYWRkaXRpb25hbCByb2FkIHR5cGVzIHByZXNlbnQgaW4gdGhlIE9OUyBkYXRhIEkgZGVjaWRlZCB0byBnbyB3aXRoIHRoYXQgYXMgYSBiYXNpcyBmb3IgZXN0aW1hdGluZyByb2FkIGFyZWEuIAoKIyMgT05TIHJvYWQgbGVuZ3RoCgpbT2ZmaWNlIGZvciBOYXRpb25hbCBTdGF0aXN0aWNzIChPTlMpXShodHRwczovL3d3dy5nb3YudWsvZ292ZXJubWVudC9zdGF0aXN0aWNhbC1kYXRhLXNldHMvcmRsMDItcm9hZC1sZW5ndGhzLWttcykgYXJlIGRvd25sb2FkYWJsZSBhcyAub2RzIGZpbGVzLiAKClRoZXJlJ3Mgbm90IG11Y2ggdG8gZ3VpZGUgdGhlIHVzZXIgaW4gd2hhdCBpcyBpbmNsdWRlZCAgIFVuZm9ydHVuYXRlbHkgdGhlcmUncyBsaXR0bGUgaW4gdGhlIHdheSBvZiBtZXRhLWRhdGEgZm9yIHRoZSBkYXRhc2V0LgoKCmBgYHtyIGxvYWQtcGFja2FnZXN9CmxpYnJhcnkocmVhZHhsKQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgoKYGBge3IgcmVhZC1kYXRhfQpnZXR3ZCgpCnNldHdkKCIuLi9kYXRhIikKZGF0YS5maWxlcyA8LSBsaXN0LmZpbGVzKHBhdHRlcm49IioueGxzIikKCgoKYGBgCgpSb2FkIGxlbmd0aCBlc3RpbWF0ZXMgaW4gR3JlYXQgQnJpdGFpbiBkdXJpbmcgMjAxMy4=</div>
 
 
 
