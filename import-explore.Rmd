@@ -1,0 +1,47 @@
+---
+title: "Road surface: import and explore"
+author: "Mark Ruddy"
+date: "2017-02-27"
+output: html_notebook
+---
+
+Data on road lengths in Great Britain can be found from the [Office for National Statistics (ONS)](https://www.gov.uk/government/statistical-data-sets/rdl02-road-lengths-kms). This is provided as road type by GB Local Authority from 2005 to 2015. A supplement also lists road lengths, with various data gaps, dating back to 1914.
+
+The Ordnance Survey also holds information on road length in their [OS Open Roads](https://www.ordnancesurvey.co.uk/business-and-government/products/os-open-roads.html) product - available under the Open Government Licence ([OGL](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)). This could potentially allow any analysis to be broken down into smaller geographic areas than that achievable from the ONS data. But OS Open Roads only incldues Motorways, A-roads, B-roads.
+
+Both datasets require assumptions on the width's of different road types. The ONS estimate includes OS data and additionally draws on information from Local Authorities, the Scottish and Welsh governments, and the Highways Agency. With the additional information present in the ONS data I decided to go with that as a basis for estimating road area.
+
+## ONS road length
+
+[Office for National Statistics (ONS)](https://www.gov.uk/government/statistical-data-sets/rdl02-road-lengths-kms) are downloadable as .ods files. 
+
+Focussing on the Local Authority dataset:
+
+```{r load-packages}
+library(tidyverse)
+```
+
+```{r read-data}
+library(readODS)
+library(httr)
+
+url <- "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/523715/rdl0202.ods"
+
+GET(url, write_disk("../data/ONS-GB-roads.ods", overwrite = T))
+
+#sheets we're interested in: c(seq(1,19,2),20)
+ons.roads <- read_ods("../data/ONS-GB-roads.ods", sheet = 1, skip = 6)
+
+lappy()
+
+```
+
+
+
+
+
+
+
+
+
+

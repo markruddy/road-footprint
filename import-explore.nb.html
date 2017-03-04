@@ -178,35 +178,40 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <p>Data on road lengths in Great Britain can be found from the <a href="https://www.gov.uk/government/statistical-data-sets/rdl02-road-lengths-kms">Office for National Statistics (ONS)</a>. This is provided as road type by GB Local Authority from 2005 to 2015. A supplement also lists road lengths, with various data gaps, dating back to 1914.</p>
 <p>The Ordnance Survey also holds information on road length in their <a href="https://www.ordnancesurvey.co.uk/business-and-government/products/os-open-roads.html">OS Open Roads</a> product - available under the Open Government Licence (<a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL</a>). This could potentially allow any analysis to be broken down into smaller geographic areas than that achievable from the ONS data. But OS Open Roads only incldues Motorways, A-roads, B-roads.</p>
-<p>Both datasets require assumptions on the width’s of different road types. With the additional road types present in the ONS data I decided to go with that as a basis for estimating road area.</p>
+<p>Both datasets require assumptions on the width’s of different road types. The ONS estimate includes OS data and additionally draws on information from Local Authorities, the Scottish and Welsh governments, and the Highways Agency. With the additional information present in the ONS data I decided to go with that as a basis for estimating road area.</p>
 <div id="ons-road-length" class="section level2">
 <h2>ONS road length</h2>
 <p><a href="https://www.gov.uk/government/statistical-data-sets/rdl02-road-lengths-kms">Office for National Statistics (ONS)</a> are downloadable as .ods files.</p>
-<p>There’s not much to guide the user in what is included Unfortunately there’s little in the way of meta-data for the dataset.</p>
+<p>Focussing on the Local Authority dataset:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkeGwpXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmBgYCJ9 -->
-<pre class="r"><code>library(readxl)
-library(tidyverse)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
+<pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2V0d2QoKVxuXG5gYGAifQ== -->
-<pre class="r"><code>getwd()
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkT0RTKVxubGlicmFyeShodHRyKVxuXG51cmwgPC0gXCJodHRwczovL3d3dy5nb3YudWsvZ292ZXJubWVudC91cGxvYWRzL3N5c3RlbS91cGxvYWRzL2F0dGFjaG1lbnRfZGF0YS9maWxlLzUyMzcxNS9yZGwwMjAyLm9kc1wiXG5cbkdFVCh1cmwsIHdyaXRlX2Rpc2soXCIuLi9kYXRhL09OUy1HQi1yb2Fkcy5vZHNcIiwgb3ZlcndyaXRlID0gVCkpXG5cbiNzaGVldHMgd2UncmUgaW50ZXJlc3RlZCBpbjogYyhzZXEoMSwxOSwyKSwyMClcbm9ucy5yb2FkcyA8LSByZWFkX29kcyhcIi4uL2RhdGEvT05TLUdCLXJvYWRzLm9kc1wiLCBzaGVldCA9IDEsIHNraXAgPSA2KVxuXG5sYXBweSgpXG5cbmBgYCJ9 -->
+<pre class="r"><code>library(readODS)
+library(httr)
+
+url &lt;- &quot;https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/523715/rdl0202.ods&quot;
+
+GET(url, write_disk(&quot;../data/ONS-GB-roads.ods&quot;, overwrite = T))
+
+#sheets we're interested in: c(seq(1,19,2),20)
+ons.roads &lt;- read_ods(&quot;../data/ONS-GB-roads.ods&quot;, sheet = 1, skip = 6)
+
+lappy()
 </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiL1VzZXJzL21hcmtydWRkeS9Eb2N1bWVudHMvUmVzZWFyY2gvZGF0YS1zY2llbmNlL3JvYWQtZm9vdHByaW50XCJcbiJ9 -->
-<pre><code>[1] &quot;/Users/markruddy/Documents/Research/data-science/road-footprint&quot;</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Road length estimates in Great Britain during 2013.</p>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUm9hZCBzdXJmYWNlOiBpbXBvcnQgYW5kIGV4cGxvcmUiCmF1dGhvcjogIk1hcmsgUnVkZHkiCmRhdGU6ICIyMDE3LTAyLTI3IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpEYXRhIG9uIHJvYWQgbGVuZ3RocyBpbiBHcmVhdCBCcml0YWluIGNhbiBiZSBmb3VuZCBmcm9tIHRoZSBbT2ZmaWNlIGZvciBOYXRpb25hbCBTdGF0aXN0aWNzIChPTlMpXShodHRwczovL3d3dy5nb3YudWsvZ292ZXJubWVudC9zdGF0aXN0aWNhbC1kYXRhLXNldHMvcmRsMDItcm9hZC1sZW5ndGhzLWttcykuIFRoaXMgaXMgcHJvdmlkZWQgYXMgcm9hZCB0eXBlIGJ5IEdCIExvY2FsIEF1dGhvcml0eSBmcm9tIDIwMDUgdG8gMjAxNS4gQSBzdXBwbGVtZW50IGFsc28gbGlzdHMgcm9hZCBsZW5ndGhzLCB3aXRoIHZhcmlvdXMgZGF0YSBnYXBzLCBkYXRpbmcgYmFjayB0byAxOTE0LgoKVGhlIE9yZG5hbmNlIFN1cnZleSBhbHNvIGhvbGRzIGluZm9ybWF0aW9uIG9uIHJvYWQgbGVuZ3RoIGluIHRoZWlyIFtPUyBPcGVuIFJvYWRzXShodHRwczovL3d3dy5vcmRuYW5jZXN1cnZleS5jby51ay9idXNpbmVzcy1hbmQtZ292ZXJubWVudC9wcm9kdWN0cy9vcy1vcGVuLXJvYWRzLmh0bWwpIHByb2R1Y3QgLSBhdmFpbGFibGUgdW5kZXIgdGhlIE9wZW4gR292ZXJubWVudCBMaWNlbmNlIChbT0dMXShodHRwOi8vd3d3Lm5hdGlvbmFsYXJjaGl2ZXMuZ292LnVrL2RvYy9vcGVuLWdvdmVybm1lbnQtbGljZW5jZS92ZXJzaW9uLzMvKSkuIFRoaXMgY291bGQgcG90ZW50aWFsbHkgYWxsb3cgYW55IGFuYWx5c2lzIHRvIGJlIGJyb2tlbiBkb3duIGludG8gc21hbGxlciBnZW9ncmFwaGljIGFyZWFzIHRoYW4gdGhhdCBhY2hpZXZhYmxlIGZyb20gdGhlIE9OUyBkYXRhLiBCdXQgT1MgT3BlbiBSb2FkcyBvbmx5IGluY2xkdWVzIE1vdG9yd2F5cywgQS1yb2FkcywgQi1yb2Fkcy4KCkJvdGggZGF0YXNldHMgcmVxdWlyZSBhc3N1bXB0aW9ucyBvbiB0aGUgd2lkdGgncyBvZiBkaWZmZXJlbnQgcm9hZCB0eXBlcy4gV2l0aCB0aGUgYWRkaXRpb25hbCByb2FkIHR5cGVzIHByZXNlbnQgaW4gdGhlIE9OUyBkYXRhIEkgZGVjaWRlZCB0byBnbyB3aXRoIHRoYXQgYXMgYSBiYXNpcyBmb3IgZXN0aW1hdGluZyByb2FkIGFyZWEuIAoKIyMgT05TIHJvYWQgbGVuZ3RoCgpbT2ZmaWNlIGZvciBOYXRpb25hbCBTdGF0aXN0aWNzIChPTlMpXShodHRwczovL3d3dy5nb3YudWsvZ292ZXJubWVudC9zdGF0aXN0aWNhbC1kYXRhLXNldHMvcmRsMDItcm9hZC1sZW5ndGhzLWttcykgYXJlIGRvd25sb2FkYWJsZSBhcyAub2RzIGZpbGVzLiAKClRoZXJlJ3Mgbm90IG11Y2ggdG8gZ3VpZGUgdGhlIHVzZXIgaW4gd2hhdCBpcyBpbmNsdWRlZCAgIFVuZm9ydHVuYXRlbHkgdGhlcmUncyBsaXR0bGUgaW4gdGhlIHdheSBvZiBtZXRhLWRhdGEgZm9yIHRoZSBkYXRhc2V0LgoKCmBgYHtyIGxvYWQtcGFja2FnZXN9CmxpYnJhcnkocmVhZHhsKQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgoKYGBge3IgcmVhZC1kYXRhfQpnZXR3ZCgpCnNldHdkKCIuLi9kYXRhIikKZGF0YS5maWxlcyA8LSBsaXN0LmZpbGVzKHBhdHRlcm49IioueGxzIikKCgoKYGBgCgpSb2FkIGxlbmd0aCBlc3RpbWF0ZXMgaW4gR3JlYXQgQnJpdGFpbiBkdXJpbmcgMjAxMy4=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUm9hZCBzdXJmYWNlOiBpbXBvcnQgYW5kIGV4cGxvcmUiCmF1dGhvcjogIk1hcmsgUnVkZHkiCmRhdGU6ICIyMDE3LTAyLTI3IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpEYXRhIG9uIHJvYWQgbGVuZ3RocyBpbiBHcmVhdCBCcml0YWluIGNhbiBiZSBmb3VuZCBmcm9tIHRoZSBbT2ZmaWNlIGZvciBOYXRpb25hbCBTdGF0aXN0aWNzIChPTlMpXShodHRwczovL3d3dy5nb3YudWsvZ292ZXJubWVudC9zdGF0aXN0aWNhbC1kYXRhLXNldHMvcmRsMDItcm9hZC1sZW5ndGhzLWttcykuIFRoaXMgaXMgcHJvdmlkZWQgYXMgcm9hZCB0eXBlIGJ5IEdCIExvY2FsIEF1dGhvcml0eSBmcm9tIDIwMDUgdG8gMjAxNS4gQSBzdXBwbGVtZW50IGFsc28gbGlzdHMgcm9hZCBsZW5ndGhzLCB3aXRoIHZhcmlvdXMgZGF0YSBnYXBzLCBkYXRpbmcgYmFjayB0byAxOTE0LgoKVGhlIE9yZG5hbmNlIFN1cnZleSBhbHNvIGhvbGRzIGluZm9ybWF0aW9uIG9uIHJvYWQgbGVuZ3RoIGluIHRoZWlyIFtPUyBPcGVuIFJvYWRzXShodHRwczovL3d3dy5vcmRuYW5jZXN1cnZleS5jby51ay9idXNpbmVzcy1hbmQtZ292ZXJubWVudC9wcm9kdWN0cy9vcy1vcGVuLXJvYWRzLmh0bWwpIHByb2R1Y3QgLSBhdmFpbGFibGUgdW5kZXIgdGhlIE9wZW4gR292ZXJubWVudCBMaWNlbmNlIChbT0dMXShodHRwOi8vd3d3Lm5hdGlvbmFsYXJjaGl2ZXMuZ292LnVrL2RvYy9vcGVuLWdvdmVybm1lbnQtbGljZW5jZS92ZXJzaW9uLzMvKSkuIFRoaXMgY291bGQgcG90ZW50aWFsbHkgYWxsb3cgYW55IGFuYWx5c2lzIHRvIGJlIGJyb2tlbiBkb3duIGludG8gc21hbGxlciBnZW9ncmFwaGljIGFyZWFzIHRoYW4gdGhhdCBhY2hpZXZhYmxlIGZyb20gdGhlIE9OUyBkYXRhLiBCdXQgT1MgT3BlbiBSb2FkcyBvbmx5IGluY2xkdWVzIE1vdG9yd2F5cywgQS1yb2FkcywgQi1yb2Fkcy4KCkJvdGggZGF0YXNldHMgcmVxdWlyZSBhc3N1bXB0aW9ucyBvbiB0aGUgd2lkdGgncyBvZiBkaWZmZXJlbnQgcm9hZCB0eXBlcy4gVGhlIE9OUyBlc3RpbWF0ZSBpbmNsdWRlcyBPUyBkYXRhIGFuZCBhZGRpdGlvbmFsbHkgZHJhd3Mgb24gaW5mb3JtYXRpb24gZnJvbSBMb2NhbCBBdXRob3JpdGllcywgdGhlIFNjb3R0aXNoIGFuZCBXZWxzaCBnb3Zlcm5tZW50cywgYW5kIHRoZSBIaWdod2F5cyBBZ2VuY3kuIFdpdGggdGhlIGFkZGl0aW9uYWwgaW5mb3JtYXRpb24gcHJlc2VudCBpbiB0aGUgT05TIGRhdGEgSSBkZWNpZGVkIHRvIGdvIHdpdGggdGhhdCBhcyBhIGJhc2lzIGZvciBlc3RpbWF0aW5nIHJvYWQgYXJlYS4KCiMjIE9OUyByb2FkIGxlbmd0aAoKW09mZmljZSBmb3IgTmF0aW9uYWwgU3RhdGlzdGljcyAoT05TKV0oaHR0cHM6Ly93d3cuZ292LnVrL2dvdmVybm1lbnQvc3RhdGlzdGljYWwtZGF0YS1zZXRzL3JkbDAyLXJvYWQtbGVuZ3Rocy1rbXMpIGFyZSBkb3dubG9hZGFibGUgYXMgLm9kcyBmaWxlcy4gCgpGb2N1c3Npbmcgb24gdGhlIExvY2FsIEF1dGhvcml0eSBkYXRhc2V0OgoKYGBge3IgbG9hZC1wYWNrYWdlc30KbGlicmFyeSh0aWR5dmVyc2UpCmBgYAoKYGBge3IgcmVhZC1kYXRhfQpsaWJyYXJ5KHJlYWRPRFMpCmxpYnJhcnkoaHR0cikKCnVybCA8LSAiaHR0cHM6Ly93d3cuZ292LnVrL2dvdmVybm1lbnQvdXBsb2Fkcy9zeXN0ZW0vdXBsb2Fkcy9hdHRhY2htZW50X2RhdGEvZmlsZS81MjM3MTUvcmRsMDIwMi5vZHMiCgpHRVQodXJsLCB3cml0ZV9kaXNrKCIuLi9kYXRhL09OUy1HQi1yb2Fkcy5vZHMiLCBvdmVyd3JpdGUgPSBUKSkKCiNzaGVldHMgd2UncmUgaW50ZXJlc3RlZCBpbjogYyhzZXEoMSwxOSwyKSwyMCkKb25zLnJvYWRzIDwtIHJlYWRfb2RzKCIuLi9kYXRhL09OUy1HQi1yb2Fkcy5vZHMiLCBzaGVldCA9IDEsIHNraXAgPSA2KQoKbGFwcHkoKQoKYGBgCgoKCgoKCgoKCgo=</div>
 
 
 
