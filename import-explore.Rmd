@@ -19,11 +19,11 @@ Focussing on the Local Authority dataset:
 
 ```{r load-packages}
 library(tidyverse)
+library(readODS)
+library(httr)
 ```
 
 ```{r read-data}
-library(readODS)
-library(httr)
 
 url <- "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/523715/rdl0202.ods"
 
@@ -31,6 +31,11 @@ GET(url, write_disk("../data/ONS-GB-roads.ods", overwrite = T))
 
 #sheets we're interested in: c(seq(1,19,2),20)
 ons.roads <- read_ods("../data/ONS-GB-roads.ods", sheet = 1, skip = 6)
+
+View(ons.roads)
+
+
+
 
 lappy()
 
