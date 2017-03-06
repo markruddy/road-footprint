@@ -73,7 +73,13 @@ I could do all this manipulation in the spreadsheet but the time spent manually 
 What are the steps that need to be taken to combine all the road length data together into a single dataset?
 
 1. Add a year column to each list element.
-2. 
+2. Remove NULL, NA or "" columns.
+3. Remove non-data space below dataset.
+4. Harmonise rows post-2009: 
+  - Cheshire UA is split into Cheshire East UA, and Cheshire West and Chester UA from 2009.
+  - Bedfordshire is split into Bedford UA and Central Bedfordshire UA from 2009. 
+5. Harmonise columns:
+  - From 2013 to 2015 - Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013.
 
 ```{r tidy}
 head(rdl.list[[1]])
