@@ -186,6 +186,9 @@ $(document).ready(function () {
 <!-- rnb-text-end -->
 <!-- rnb-text-begin -->
 <p>I’m interested in looking at road lengths across all years (2005-2015) and</p>
+</div>
+<div id="the-ons-dataset" class="section level2">
+<h2>The ONS dataset</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG51cmwgPC0gXCJodHRwczovL3d3dy5nb3YudWsvZ292ZXJubWVudC91cGxvYWRzL3N5c3RlbS91cGxvYWRzL2F0dGFjaG1lbnRfZGF0YS9maWxlLzUyMzcxNS9yZGwwMjAyLm9kc1wiXG5cbkdFVCh1cmwsIHdyaXRlX2Rpc2soXCIuLi9kYXRhL09OUy1HQi1yb2Fkcy5vZHNcIiwgb3ZlcndyaXRlID0gVCkpXG5cbm9ucy5yb2FkcyA8LSByZWFkX29kcyhcIi4uL2RhdGEvT05TLUdCLXJvYWRzLm9kc1wiLCBzaGVldCA9IDEsIHNraXAgPSA2KVxuYGBgIn0= -->
@@ -198,10 +201,10 @@ ons.roads &lt;- read_ods(&quot;../data/ONS-GB-roads.ods&quot;, sheet = 1, skip =
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Inspection of ONS-GB-roads.ods shows that:</p>
+<p>Inspecting ONS-GB-roads.ods in OpenOffice shows that:</p>
 <ul>
 <li>There are 6 lines to skip before the dataset begins.</li>
-<li>Sheets contain different types of road length information. Those sheets with names prefixed “RDL0202a”&quot; contain Motorway, ‘A’ road, and Minor road data broken down by Local authority. This is the data we’re interested in.</li>
+<li>Sheets contain different types of road length information. Those sheets with names prefixed “RDL0202a”&quot; contain Motorway, ‘A’ road, and Minor road data broken down by Local authority. These eleven sheets (years) are the data we’re interested in.</li>
 <li>The cell range of the dataset (including column names) is:</li>
 <li>A7:Z211 for 2005 to 2008;</li>
 <li>A7:Z213 from 2009 to 2012
@@ -215,73 +218,33 @@ ons.roads &lt;- read_ods(&quot;../data/ONS-GB-roads.ods&quot;, sheet = 1, skip =
 </ul>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm9hZC5kYXRhIDwtIGxhcHBseShzaGVldHMsIG9ucy5jYWxsKVxuXG5gYGAifQ== -->
-<pre class="r"><code>road.data &lt;- lapply(sheets, ons.call)
-</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cblBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cblBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cblBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbiJ9 -->
-<pre><code>Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.
-Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.
-Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.
-Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.
-Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.
-Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.
-Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.
-Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.
-Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.
-Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.
-Parsed with column specification:
-cols(
-  .default = col_character()
-)
-See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Having read data on road length from the .ods sheets we need to clean it up. A number of differences in the dimensions of the dataset were highlighted above. We need to harmonise each list element (sheet) in order to combine them all together and make them ‘tidy’ for analysis.</p>
+<p>I could do all this manipulation in the spreadsheet but the time spent manually tinkering to give the format needed is not time well spent. Some of the operations are repetative and getting them down in R enables them to be applied across all eleven years. Also, it’s a good R learning experience.</p>
+</div>
+<div id="bringing-the-whole-road-length-dataset-together" class="section level2">
+<h2>Bringing the whole road length dataset together</h2>
+<p>What are the steps that need to be taken to combine all the road length data together into a single dataset?</p>
+<ol style="list-style-type: decimal">
+<li>Add a year column to each list element.</li>
+<li></li>
+</ol>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6MjYsIm5yb3ciOjZ9LCJyZGYiOiJINHNJQUFBQUFBQUFBN1ZXeTNLYk1CUWxCdXdKblRScE05TkZWdDVsazJFUVNHQzZ5NnROMjd5YVI1dDJwOWcwcHNVb0krTkpzK3VYcHhVMlY1S3htNzVTWmpDSFkzVHUwYjFYZ3BPZEM5KzVjQXpEYUJpbTJUQWFwb0JXUS93c0dKYXhXRjYvR29hNUtzQ2FPRmZFMmF6K1dEbzZQRzF2OG9RNjI2eVhWT1RpcmhkNjRzQlJqZkJJblVCMXdxOFJKS3BGYko0a1Z5bkxxenZua1BHaTM5Nmx3K0xCbU9sNHkvdXNTN00ySFJWOXh0UGl0cUpYdHRrb0wyN2JPeVBlcDRQMitTWWtaSWZ5TE0ydkNwWnI1QjdsUlpaY001WXBjdVVnN2ZXeVpIakoyZWlxci9nbll5dWp3V1hDTTVyM3lqL0FrVWpMZDNIOHdYVnFKbWQ4bEg5eEJxeGcvSWJlRGl2YUNrSzNVMkV6ZHFGRXB1ZDZQNEhUc3F2SFBNMjc2VFhOWnFUdjBmZ2Q1YVhOYkZiejcrMCtTUGI0aUl0dVdOOWNsM2FJR3dCR3ZndjlhM1pjRERDVVQ5Z285TjF3cm5KN3hDOXByaW1iMGE4eXBuVHZMVXU3N3RrTy9Gam0wQW9pTjVZVGlJUzdTakpRcnJGSFpseHJaYTg3dDRKQXkwa2dKUzJraGZVN21vV3lwTE8xTHlVZHptaHZxQnVCdEZwaDRNSUdZMkdpMURDV3ZCMktBUS9WQVlzbmt6eHVxVHlTVUZham5CenNaaVpTbFFsbFM5aWg2QTlVRnoyZkpFK0tUazBGZVVvelVyTVZOSkY1TFB0dnZ0RnRhVFFNTk5GWWlWcEljeHJJUjFwb0E1TXkwL085U2wyTHhISjJGdXBvZllSVUNOOVhEUkRHYm4wL0I3UG42eXE0TDRMTENjYWhLamttV2pONWtoZEQ0bkZPNXZ1VjBuYnNxY3paUGxZS3R0L0JzcFEyUm1wanNYR0h6SFRuY3RtZGd6Um5mS28vVzRHdzdxdnV3eEZSb2tHSXRBaFJJRzlhZUlPUWpoYmozOXIwNlFIOXpQaHpaN0tyNlBhc0tOYktncVJQYmE4cXR6REk4TnpONmxtbHJ1MHUrZ0lOeEtLVUlRaFNWUlM3akl3UitQSVpHMk4vcHM4ZUhmeXZ6Rlp2MkROV1ZNYWRMQkh2NnI2S0VzWll0ckZOY0VldFh1eXBGNDlOa0ZxT0xiS0J3bkx4VEg4ejJUa2RKTU1xOUZwRkxzQmJmbUVMd0RhQUhRQzdBRjRBZUFsZ0Q4QXJBSzhCdkFHd0QrQUF3Q0dBSXdESEFONENPQUZ3Q3VBTXdEbUFkd0RlQTdnQThBSEF4MW9hRmptN2NTRVZTK0pzZkRQR1I3T2VyMjVHaDVBdklKMGVMYWo3aVl2eDR1NnVOcVRGcmd2eExTZ0dOY3FQVTdzMmVJSFhDS3RJZTdlbDZwaWJuRXZWdGFuaHRVbWNCaXd0dXhyZkZNMlM1dkNaYTJmME1zbXFtOGRpbXVOWnV0ZGlaY2pQU3NFTzNhSnNOMkM2TEFObVBDSGo3Z2VDSG9aVmZ3c0FBQT09In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["A"],"name":[1],"type":["chr"],"align":["left"]},{"label":["B"],"name":[2],"type":["chr"],"align":["left"]},{"label":["C"],"name":[3],"type":["chr"],"align":["left"]},{"label":["D"],"name":[4],"type":["chr"],"align":["left"]},{"label":["E"],"name":[5],"type":["chr"],"align":["left"]},{"label":["F"],"name":[6],"type":["chr"],"align":["left"]},{"label":["G"],"name":[7],"type":["chr"],"align":["left"]},{"label":["H"],"name":[8],"type":["chr"],"align":["left"]},{"label":["I"],"name":[9],"type":["chr"],"align":["left"]},{"label":["J"],"name":[10],"type":["chr"],"align":["left"]},{"label":["K"],"name":[11],"type":["chr"],"align":["left"]},{"label":["L"],"name":[12],"type":["chr"],"align":["left"]},{"label":["M"],"name":[13],"type":["chr"],"align":["left"]},{"label":["N"],"name":[14],"type":["chr"],"align":["left"]},{"label":["O"],"name":[15],"type":["chr"],"align":["left"]},{"label":["P"],"name":[16],"type":["chr"],"align":["left"]},{"label":["Q"],"name":[17],"type":["chr"],"align":["left"]},{"label":["R"],"name":[18],"type":["chr"],"align":["left"]},{"label":["S"],"name":[19],"type":["chr"],"align":["left"]},{"label":["T"],"name":[20],"type":["chr"],"align":["left"]},{"label":["U"],"name":[21],"type":["chr"],"align":["left"]},{"label":["V"],"name":[22],"type":["chr"],"align":["left"]},{"label":["W"],"name":[23],"type":["chr"],"align":["left"]},{"label":["X"],"name":[24],"type":["chr"],"align":["left"]},{"label":["Y"],"name":[25],"type":["chr"],"align":["left"]},{"label":["Z"],"name":[26],"type":["chr"],"align":["left"]}],"data":[{"1":"ONS Area\\nCode","2":"Region","3":"Local authority","4":"NA","5":"Trunk\\nmotorways","6":"Principal\\nmotorways","7":"All\\nmotorways","8":"NA","9":"Trunk\\nrural 'A'","10":"Trunk urban 'A'","11":"Principal rural 'A'","12":"Principal\\nurban 'A'","13":"All 'A'\\nroads","14":"NA","15":"Rural 'B'","16":"Urban 'B'","17":"Rural 'C'","18":"Urban 'C'","19":"Rural 'U'","20":"Urban 'U'","21":"All minor\\nroads","22":"NA","23":"Major:\\nTrunk roads","24":"Major:\\nPrincipal roads","25":"Minor\\nroads","26":"Total road\\nlength","_rn_":"1"},{"1":"E06000047","2":"North East","3":"County Durham UA","4":"NA","5":"36.8","6":"0.0","7":"36.8","8":"NA","9":"35.3","10":"7.0","11":"329.8","12":"33.3","13":"405.4","14":"NA","15":"356.0","16":"45.8","17":"635.8","18":"59.2","19":"1,255.5","20":"900.5","21":"3,252.7","22":"NA","23":"79.1","24":"363.1","25":"3,252.7","26":"3,694.9","_rn_":"2"},{"1":"E06000005","2":"North East","3":"Darlington UA","4":"NA","5":"9.5","6":"0.0","7":"9.5","8":"NA","9":"12.2","10":"0.0","11":"37.9","12":"13.6","13":"63.7","14":"NA","15":"19.1","16":"10.1","17":"90.1","18":"18.9","19":"96.4","20":"240.4","21":"475.0","22":"NA","23":"21.7","24":"51.5","25":"475.0","26":"548.2","_rn_":"3"},{"1":"E06000001","2":"North East","3":"Hartlepool UA","4":"NA","5":"0.0","6":"0.0","7":"0.0","8":"NA","9":"8.4","10":"0.0","11":"17.6","12":"19.8","13":"45.8","14":"NA","15":"1.3","16":"7.7","17":"11.3","18":"11.1","19":"45.6","20":"284.0","21":"361.0","22":"NA","23":"8.4","24":"37.4","25":"361.0","26":"406.8","_rn_":"4"},{"1":"E06000002","2":"North East","3":"Middlesbrough UA","4":"NA","5":"0.0","6":"0.0","7":"0.0","8":"NA","9":"6.3","10":"6.3","11":"3.3","12":"28.8","13":"44.7","14":"NA","15":"6.2","16":"10.5","17":"3.8","18":"22.6","19":"10.4","20":"419.5","21":"473.0","22":"NA","23":"12.6","24":"32.1","25":"473.0","26":"517.7","_rn_":"5"},{"1":"E06000057","2":"North East","3":"Northumberland UA","4":"NA","5":"0.0","6":"0.0","7":"0.0","8":"NA","9":"162.6","10":"0.0","11":"405.6","12":"36.8","13":"605.0","14":"NA","15":"612.1","16":"25.3","17":"1,455.4","18":"69.7","19":"1,910.5","20":"485.8","21":"4,558.8","22":"NA","23":"162.6","24":"442.4","25":"4,558.8","26":"5,163.8","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10],"total":[26]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUm9hZCBzdXJmYWNlOiBpbXBvcnQgYW5kIGV4cGxvcmUiCmF1dGhvcjogIk1hcmsgUnVkZHkiCmRhdGU6ICIyMDE3LTAyLTI3IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpEYXRhIG9uIHJvYWQgbGVuZ3RocyBpbiBHcmVhdCBCcml0YWluIGNhbiBiZSBmb3VuZCBmcm9tIHRoZSBbT2ZmaWNlIGZvciBOYXRpb25hbCBTdGF0aXN0aWNzIChPTlMpXShodHRwczovL3d3dy5nb3YudWsvZ292ZXJubWVudC9zdGF0aXN0aWNhbC1kYXRhLXNldHMvcmRsMDItcm9hZC1sZW5ndGhzLWttcykuIFRoaXMgaXMgcHJvdmlkZWQgYXMgcm9hZCB0eXBlIGJ5IEdCIExvY2FsIEF1dGhvcml0eSBmcm9tIDIwMDUgdG8gMjAxNS4gQSBzdXBwbGVtZW50IGFsc28gbGlzdHMgcm9hZCBsZW5ndGhzLCB3aXRoIHZhcmlvdXMgZGF0YSBnYXBzLCBkYXRpbmcgYmFjayB0byAxOTE0LgoKVGhlIE9yZG5hbmNlIFN1cnZleSBhbHNvIGhvbGRzIGluZm9ybWF0aW9uIG9uIHJvYWQgbGVuZ3RoIGluIHRoZWlyIFtPUyBPcGVuIFJvYWRzXShodHRwczovL3d3dy5vcmRuYW5jZXN1cnZleS5jby51ay9idXNpbmVzcy1hbmQtZ292ZXJubWVudC9wcm9kdWN0cy9vcy1vcGVuLXJvYWRzLmh0bWwpIHByb2R1Y3QgLSBhdmFpbGFibGUgdW5kZXIgdGhlIE9wZW4gR292ZXJubWVudCBMaWNlbmNlIChbT0dMXShodHRwOi8vd3d3Lm5hdGlvbmFsYXJjaGl2ZXMuZ292LnVrL2RvYy9vcGVuLWdvdmVybm1lbnQtbGljZW5jZS92ZXJzaW9uLzMvKSkuIFRoaXMgY291bGQgcG90ZW50aWFsbHkgYWxsb3cgYW55IGFuYWx5c2lzIHRvIGJlIGJyb2tlbiBkb3duIGludG8gc21hbGxlciBnZW9ncmFwaGljIGFyZWFzIHRoYW4gdGhhdCBhY2hpZXZhYmxlIGZyb20gdGhlIE9OUyBkYXRhLiBCdXQgT1MgT3BlbiBSb2FkcyBvbmx5IGluY2xkdWVzIE1vdG9yd2F5cywgQS1yb2FkcywgQi1yb2Fkcy4KCkJvdGggZGF0YXNldHMgcmVxdWlyZSBhc3N1bXB0aW9ucyBvbiB0aGUgd2lkdGgncyBvZiBkaWZmZXJlbnQgcm9hZCB0eXBlcy4gVGhlIE9OUyBlc3RpbWF0ZSBpbmNsdWRlcyBPUyBkYXRhIGFuZCBhZGRpdGlvbmFsbHkgZHJhd3Mgb24gaW5mb3JtYXRpb24gZnJvbSBMb2NhbCBBdXRob3JpdGllcywgdGhlIFNjb3R0aXNoIGFuZCBXZWxzaCBnb3Zlcm5tZW50cywgYW5kIHRoZSBIaWdod2F5cyBBZ2VuY3kuIFdpdGggdGhlIGFkZGl0aW9uYWwgaW5mb3JtYXRpb24gcHJlc2VudCBpbiB0aGUgT05TIGRhdGEgSSBkZWNpZGVkIHRvIGdvIHdpdGggdGhhdCBhcyBhIGJhc2lzIGZvciBlc3RpbWF0aW5nIHJvYWQgYXJlYS4KCiMjIE9OUyByb2FkIGxlbmd0aAoKW09mZmljZSBmb3IgTmF0aW9uYWwgU3RhdGlzdGljcyAoT05TKV0oaHR0cHM6Ly93d3cuZ292LnVrL2dvdmVybm1lbnQvc3RhdGlzdGljYWwtZGF0YS1zZXRzL3JkbDAyLXJvYWQtbGVuZ3Rocy1rbXMpIGFyZSBkb3dubG9hZGFibGUgYXMgLm9kcyBmaWxlcy4gCgpGb2N1c3Npbmcgb24gdGhlIExvY2FsIEF1dGhvcml0eSBkYXRhc2V0OgoKYGBge3IgbG9hZC1wYWNrYWdlcywgaW5jbHVkZT1GQUxTRX0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkocmVhZE9EUykKbGlicmFyeShodHRyKQpgYGAKCkknbSBpbnRlcmVzdGVkIGluIGxvb2tpbmcgYXQgcm9hZCBsZW5ndGhzIGFjcm9zcyBhbGwgeWVhcnMgKDIwMDUtMjAxNSkgYW5kIAoKCmBgYHtyIHJlYWQtZGF0YX0KCnVybCA8LSAiaHR0cHM6Ly93d3cuZ292LnVrL2dvdmVybm1lbnQvdXBsb2Fkcy9zeXN0ZW0vdXBsb2Fkcy9hdHRhY2htZW50X2RhdGEvZmlsZS81MjM3MTUvcmRsMDIwMi5vZHMiCgpHRVQodXJsLCB3cml0ZV9kaXNrKCIuLi9kYXRhL09OUy1HQi1yb2Fkcy5vZHMiLCBvdmVyd3JpdGUgPSBUKSkKCm9ucy5yb2FkcyA8LSByZWFkX29kcygiLi4vZGF0YS9PTlMtR0Itcm9hZHMub2RzIiwgc2hlZXQgPSAxLCBza2lwID0gNikKYGBgCgpJbnNwZWN0aW9uIG9mIE9OUy1HQi1yb2Fkcy5vZHMgc2hvd3MgdGhhdDoKCiogVGhlcmUgYXJlIDYgbGluZXMgdG8gc2tpcCBiZWZvcmUgdGhlIGRhdGFzZXQgYmVnaW5zLgoqIFNoZWV0cyBjb250YWluIGRpZmZlcmVudCB0eXBlcyBvZiByb2FkIGxlbmd0aCBpbmZvcm1hdGlvbi4gVGhvc2Ugc2hlZXRzIHdpdGggbmFtZXMgcHJlZml4ZWQgIlJETDAyMDJhIiIgY29udGFpbiBNb3RvcndheSwgJ0EnIHJvYWQsIGFuZCBNaW5vciByb2FkIGRhdGEgYnJva2VuIGRvd24gYnkgTG9jYWwgYXV0aG9yaXR5LiBUaGlzIGlzIHRoZSBkYXRhIHdlJ3JlIGludGVyZXN0ZWQgaW4uCiogVGhlIGNlbGwgcmFuZ2Ugb2YgdGhlIGRhdGFzZXQgKGluY2x1ZGluZyBjb2x1bW4gbmFtZXMpIGlzOgogICogQTc6WjIxMSBmb3IgMjAwNSB0byAyMDA4OyAKICAqIEE3OloyMTMgZnJvbSAyMDA5IHRvIDIwMTIgCiAgICAtIFJ1cmFsICdDJyBhbmQgJ1UnLCBhbmQgVXJiYW4gJ0MnIGFuZCAnVScgYXJlIHNlcGFyYXRlIHVwIHRvIDIwMTMuCiAgICAtIENoZXNoaXJlIFVBIGlzIHNwbGl0IGludG8gQ2hlc2hpcmUgRWFzdCBVQSwgYW5kIENoZXNoaXJlIFdlc3QgYW5kIENoZXN0ZXIgVUEgZnJvbSAyMDA5LgogICAgLSBCZWRmb3Jkc2hpcmUgaXMgc3BsaXQgaW50byBCZWRmb3JkIFVBIGFuZCBDZW50cmFsIEJlZGZvcmRzaGlyZSBVQSBmcm9tIDIwMDkuCiAgKiBhbmQgQTc6WDIxMyBmcm9tIDIwMTMgdG8gMjAxNSAtIFJ1cmFsICdDJyBhbmQgJ1UnLCBhbmQgVXJiYW4gJ0MnIGFuZCAnVScgYXJlIGNvbWJpbmVkIGZyb20gMjAxMy4KKiBUaGVyZSBpcyBhIHZhcmlldHkgb2YgbGluZXMgb2YgbWV0YS1kYXRhIGJlbG93IGNlbGxzIGNvbnRhaW5pbmcgdGhlIGRhdGFzZXQuCgoKCmBgYHtyfQpwYXRoIDwtICIuLi9kYXRhL09OUy1HQi1yb2Fkcy5vZHMiCgojIyBTaGVldHMgd2UncmUgaW50ZXJlc3RlZCBpbgpzaGVldHMgPC0gYyhzZXEoMSwxOSwyKSwyMCkKCm9ucy5jYWxsIDwtIGZ1bmN0aW9uKHNoZWV0LCByYW5nZSkgewogIHJlYWRfb2RzKHBhdGgsIHNoZWV0ID0gc2hlZXQsIGNvbF9uYW1lcyA9IEYsIHNraXAgPSA2KSAjc2tpcCA9NiwgcmFuZ2UgPSAiQTc6WjIxMyIKfSAKCnJvYWQuZGF0YSA8LSBsYXBwbHkoc2hlZXRzLCBvbnMuY2FsbCkKCnN0cihyb2FkLmRhdGEpCgoKIyBkZiA9IGRvLmNhbGwoInJiaW5kLmRhdGEuZnJhbWUiLCBkZikgIyMgY29tYmluZSBkZnMgZnJvbSBsaXN0CmBgYAoKCgoKCgoKCgoKCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUm9hZCBzdXJmYWNlOiBpbXBvcnQgYW5kIGV4cGxvcmUiCmF1dGhvcjogIk1hcmsgUnVkZHkiCmRhdGU6ICIyMDE3LTAyLTI3IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpEYXRhIG9uIHJvYWQgbGVuZ3RocyBpbiBHcmVhdCBCcml0YWluIGNhbiBiZSBmb3VuZCBmcm9tIHRoZSBbT2ZmaWNlIGZvciBOYXRpb25hbCBTdGF0aXN0aWNzIChPTlMpXShodHRwczovL3d3dy5nb3YudWsvZ292ZXJubWVudC9zdGF0aXN0aWNhbC1kYXRhLXNldHMvcmRsMDItcm9hZC1sZW5ndGhzLWttcykuIFRoaXMgaXMgcHJvdmlkZWQgYXMgcm9hZCB0eXBlIGJ5IEdCIExvY2FsIEF1dGhvcml0eSBmcm9tIDIwMDUgdG8gMjAxNS4gQSBzdXBwbGVtZW50IGFsc28gbGlzdHMgcm9hZCBsZW5ndGhzLCB3aXRoIHZhcmlvdXMgZGF0YSBnYXBzLCBkYXRpbmcgYmFjayB0byAxOTE0LgoKVGhlIE9yZG5hbmNlIFN1cnZleSBhbHNvIGhvbGRzIGluZm9ybWF0aW9uIG9uIHJvYWQgbGVuZ3RoIGluIHRoZWlyIFtPUyBPcGVuIFJvYWRzXShodHRwczovL3d3dy5vcmRuYW5jZXN1cnZleS5jby51ay9idXNpbmVzcy1hbmQtZ292ZXJubWVudC9wcm9kdWN0cy9vcy1vcGVuLXJvYWRzLmh0bWwpIHByb2R1Y3QgLSBhdmFpbGFibGUgdW5kZXIgdGhlIE9wZW4gR292ZXJubWVudCBMaWNlbmNlIChbT0dMXShodHRwOi8vd3d3Lm5hdGlvbmFsYXJjaGl2ZXMuZ292LnVrL2RvYy9vcGVuLWdvdmVybm1lbnQtbGljZW5jZS92ZXJzaW9uLzMvKSkuIFRoaXMgY291bGQgcG90ZW50aWFsbHkgYWxsb3cgYW55IGFuYWx5c2lzIHRvIGJlIGJyb2tlbiBkb3duIGludG8gc21hbGxlciBnZW9ncmFwaGljIGFyZWFzIHRoYW4gdGhhdCBhY2hpZXZhYmxlIGZyb20gdGhlIE9OUyBkYXRhLiBCdXQgT1MgT3BlbiBSb2FkcyBvbmx5IGluY2xkdWVzIE1vdG9yd2F5cywgQS1yb2FkcywgQi1yb2Fkcy4KCkJvdGggZGF0YXNldHMgcmVxdWlyZSBhc3N1bXB0aW9ucyBvbiB0aGUgd2lkdGgncyBvZiBkaWZmZXJlbnQgcm9hZCB0eXBlcy4gVGhlIE9OUyBlc3RpbWF0ZSBpbmNsdWRlcyBPUyBkYXRhIGFuZCBhZGRpdGlvbmFsbHkgZHJhd3Mgb24gaW5mb3JtYXRpb24gZnJvbSBMb2NhbCBBdXRob3JpdGllcywgdGhlIFNjb3R0aXNoIGFuZCBXZWxzaCBnb3Zlcm5tZW50cywgYW5kIHRoZSBIaWdod2F5cyBBZ2VuY3kuIFdpdGggdGhlIGFkZGl0aW9uYWwgaW5mb3JtYXRpb24gcHJlc2VudCBpbiB0aGUgT05TIGRhdGEgSSBkZWNpZGVkIHRvIGdvIHdpdGggdGhhdCBhcyBhIGJhc2lzIGZvciBlc3RpbWF0aW5nIHJvYWQgYXJlYS4KCiMjIE9OUyByb2FkIGxlbmd0aAoKW09mZmljZSBmb3IgTmF0aW9uYWwgU3RhdGlzdGljcyAoT05TKV0oaHR0cHM6Ly93d3cuZ292LnVrL2dvdmVybm1lbnQvc3RhdGlzdGljYWwtZGF0YS1zZXRzL3JkbDAyLXJvYWQtbGVuZ3Rocy1rbXMpIGFyZSBkb3dubG9hZGFibGUgYXMgLm9kcyBmaWxlcy4gCgpGb2N1c3Npbmcgb24gdGhlIExvY2FsIEF1dGhvcml0eSBkYXRhc2V0OgoKYGBge3IgbG9hZC1wYWNrYWdlcywgaW5jbHVkZT1GQUxTRX0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkocmVhZE9EUykKbGlicmFyeShodHRyKQpgYGAKCkknbSBpbnRlcmVzdGVkIGluIGxvb2tpbmcgYXQgcm9hZCBsZW5ndGhzIGFjcm9zcyBhbGwgeWVhcnMgKDIwMDUtMjAxNSkgYW5kIAoKIyMgVGhlIE9OUyBkYXRhc2V0CgpgYGB7ciByZWFkLWRhdGF9Cgp1cmwgPC0gImh0dHBzOi8vd3d3Lmdvdi51ay9nb3Zlcm5tZW50L3VwbG9hZHMvc3lzdGVtL3VwbG9hZHMvYXR0YWNobWVudF9kYXRhL2ZpbGUvNTIzNzE1L3JkbDAyMDIub2RzIgoKR0VUKHVybCwgd3JpdGVfZGlzaygiLi4vZGF0YS9PTlMtR0Itcm9hZHMub2RzIiwgb3ZlcndyaXRlID0gVCkpCgpvbnMucm9hZHMgPC0gcmVhZF9vZHMoIi4uL2RhdGEvT05TLUdCLXJvYWRzLm9kcyIsIHNoZWV0ID0gMSwgc2tpcCA9IDYpCmBgYAoKSW5zcGVjdGluZyBPTlMtR0Itcm9hZHMub2RzIGluIE9wZW5PZmZpY2Ugc2hvd3MgdGhhdDoKCiogVGhlcmUgYXJlIDYgbGluZXMgdG8gc2tpcCBiZWZvcmUgdGhlIGRhdGFzZXQgYmVnaW5zLgoqIFNoZWV0cyBjb250YWluIGRpZmZlcmVudCB0eXBlcyBvZiByb2FkIGxlbmd0aCBpbmZvcm1hdGlvbi4gVGhvc2Ugc2hlZXRzIHdpdGggbmFtZXMgcHJlZml4ZWQgIlJETDAyMDJhIiIgY29udGFpbiBNb3RvcndheSwgJ0EnIHJvYWQsIGFuZCBNaW5vciByb2FkIGRhdGEgYnJva2VuIGRvd24gYnkgTG9jYWwgYXV0aG9yaXR5LiBUaGVzZSBlbGV2ZW4gc2hlZXRzICh5ZWFycykgYXJlIHRoZSBkYXRhIHdlJ3JlIGludGVyZXN0ZWQgaW4uCiogVGhlIGNlbGwgcmFuZ2Ugb2YgdGhlIGRhdGFzZXQgKGluY2x1ZGluZyBjb2x1bW4gbmFtZXMpIGlzOgogICogQTc6WjIxMSBmb3IgMjAwNSB0byAyMDA4OyAKICAqIEE3OloyMTMgZnJvbSAyMDA5IHRvIDIwMTIgCiAgICAtIFJ1cmFsICdDJyBhbmQgJ1UnLCBhbmQgVXJiYW4gJ0MnIGFuZCAnVScgYXJlIHNlcGFyYXRlIHVwIHRvIDIwMTMuCiAgICAtIENoZXNoaXJlIFVBIGlzIHNwbGl0IGludG8gQ2hlc2hpcmUgRWFzdCBVQSwgYW5kIENoZXNoaXJlIFdlc3QgYW5kIENoZXN0ZXIgVUEgZnJvbSAyMDA5LgogICAgLSBCZWRmb3Jkc2hpcmUgaXMgc3BsaXQgaW50byBCZWRmb3JkIFVBIGFuZCBDZW50cmFsIEJlZGZvcmRzaGlyZSBVQSBmcm9tIDIwMDkuCiAgKiBhbmQgQTc6WDIxMyBmcm9tIDIwMTMgdG8gMjAxNSAtIFJ1cmFsICdDJyBhbmQgJ1UnLCBhbmQgVXJiYW4gJ0MnIGFuZCAnVScgYXJlIGNvbWJpbmVkIGZyb20gMjAxMy4KKiBUaGVyZSBpcyBhIHZhcmlldHkgb2YgbGluZXMgb2YgbWV0YS1kYXRhIGJlbG93IGNlbGxzIGNvbnRhaW5pbmcgdGhlIGRhdGFzZXQuCgoKCmBgYHtyIHJlYWQtcn0KcGF0aCA8LSAiLi4vZGF0YS9PTlMtR0Itcm9hZHMub2RzIgoKIyMgU2hlZXRzIHdlJ3JlIGludGVyZXN0ZWQgaW4Kc2hlZXRzIDwtIGMoc2VxKDEsMTksMiksMjApCgpvbnMuY2FsbCA8LSBmdW5jdGlvbihzaGVldCwgcmFuZ2UpIHsKICByZWFkX29kcyhwYXRoLCBzaGVldCA9IHNoZWV0LCBjb2xfbmFtZXMgPSBGLCBza2lwID0gNikgI3NraXAgPTYsIHJhbmdlID0gIkE3OloyMTMiCn0gCgpyZGwubGlzdCA8LSBsYXBwbHkoc2hlZXRzLCBvbnMuY2FsbCkKYGBgCgpIYXZpbmcgcmVhZCBkYXRhIG9uIHJvYWQgbGVuZ3RoIGZyb20gdGhlIC5vZHMgc2hlZXRzIHdlIG5lZWQgdG8gY2xlYW4gaXQgdXAuIEEgbnVtYmVyIG9mIGRpZmZlcmVuY2VzIGluIHRoZSBkaW1lbnNpb25zIG9mIHRoZSBkYXRhc2V0IHdlcmUgaGlnaGxpZ2h0ZWQgYWJvdmUuIFdlIG5lZWQgdG8gaGFybW9uaXNlIGVhY2ggbGlzdCBlbGVtZW50IChzaGVldCkgaW4gb3JkZXIgdG8gY29tYmluZSB0aGVtIGFsbCB0b2dldGhlciBhbmQgbWFrZSB0aGVtICd0aWR5JyBmb3IgYW5hbHlzaXMuCgpJIGNvdWxkIGRvIGFsbCB0aGlzIG1hbmlwdWxhdGlvbiBpbiB0aGUgc3ByZWFkc2hlZXQgYnV0IHRoZSB0aW1lIHNwZW50IG1hbnVhbGx5IHRpbmtlcmluZyB0byBnaXZlIHRoZSBmb3JtYXQgbmVlZGVkIGlzIG5vdCB0aW1lIHdlbGwgc3BlbnQuIFNvbWUgb2YgdGhlIG9wZXJhdGlvbnMgYXJlIHJlcGV0YXRpdmUgYW5kIGdldHRpbmcgdGhlbSBkb3duIGluIFIgZW5hYmxlcyB0aGVtIHRvIGJlIGFwcGxpZWQgYWNyb3NzIGFsbCBlbGV2ZW4geWVhcnMuIEFsc28sIGl0J3MgYSBnb29kIFIgbGVhcm5pbmcgZXhwZXJpZW5jZS4KCiMjIEJyaW5naW5nIHRoZSB3aG9sZSByb2FkIGxlbmd0aCBkYXRhc2V0IHRvZ2V0aGVyCgpXaGF0IGFyZSB0aGUgc3RlcHMgdGhhdCBuZWVkIHRvIGJlIHRha2VuIHRvIGNvbWJpbmUgYWxsIHRoZSByb2FkIGxlbmd0aCBkYXRhIHRvZ2V0aGVyIGludG8gYSBzaW5nbGUgZGF0YXNldD8KCjEuIEFkZCBhIHllYXIgY29sdW1uIHRvIGVhY2ggbGlzdCBlbGVtZW50LgoyLiAKCmBgYHtyIHRpZHl9CmhlYWQocmRsLmxpc3RbWzFdXSkKCmxhcHBseSgpCgoKIyByZGwgPSBkby5jYWxsKCJyYmluZC5kYXRhLmZyYW1lIiwgcmRsLmxpc3QpICMjIGNvbWJpbmUgZGZzIGZyb20gbGlzdApgYGAKCgoKCgoKCgoKCgoK</div>
 
 
 
