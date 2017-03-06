@@ -32,34 +32,43 @@ url <- "https://www.gov.uk/government/uploads/system/uploads/attachment_data/fil
 
 GET(url, write_disk("../data/ONS-GB-roads.ods", overwrite = T))
 
-#sheets we're interested in: c(seq(1,19,2),20)
 ons.roads <- read_ods("../data/ONS-GB-roads.ods", sheet = 1, skip = 6)
-range <- "A7:X213"
-sheets <- c(seq(1,19,2),20)
-
-ons.call <- function(sheet, col_names) { # sheet=vector of sheet numbers; col_names=names as 1st line - T/F
-  read_ods(url, sheet = sheet, col_names=TRUE, skip=6)
-}
-
-# ons.call <- function(sheet) {
-#   read_ods("../data/ONS-GB-roads.ods", sheet = sheet, skip=6)
-# }
-
-df <- lapply(c(1), ons.call)
-
-df
-rm(df)
-
-# df = do.call("rbind.data.frame", df) ## combine dfs from list
 ```
 
 Inspection of ONS-GB-roads.ods shows that:
 
-* There are 6 lines
-two extra Local Authorities were added 
+* There are 6 lines to skip before the dataset begins.
+* The cell range of the dataset is:
+  * A7:Z211 for 2005 to 2008; 
+  * A7:Z213 from 2009 to 2012 
+    - Rural 'C' and 'U', and Urban 'C' and 'U' are separate up to 2013.
+    - Cheshire UA is split into Cheshire East UA, and Cheshire West and Chester UA from 2009.
+    - Bedfordshire is split into Bedford UA and Central Bedfordshire UA from 2009.
+  * and A7:X213 from 2013 to 2015 - Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013.
+* Two extra Local Authorities were added from 2008 to 2009 ? 
 
 
 
+```{r}
+path <- "../data/ONS-GB-roads.ods"
+## range for most sheets
+range <- "A6:X212"
+
+#sheets we're interested in
+sheets <- c(seq(1,19,2),20)
+
+ons.call <- function(sheet) {# sheet=vector of sheet numbers
+  read_ods(path, sheet = sheet, col_names = TRUE, range = range) #skip=6
+}
+
+df.names <- lapply(c(1), ons.call)
+
+df.names
+
+rm(df)
+
+# df = do.call("rbind.data.frame", df) ## combine dfs from list
+```
 
 
 
