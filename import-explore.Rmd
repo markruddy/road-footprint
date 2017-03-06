@@ -17,11 +17,14 @@ Both datasets require assumptions on the width's of different road types. The ON
 
 Focussing on the Local Authority dataset:
 
-```{r load-packages}
+```{r load-packages, include=FALSE}
 library(tidyverse)
 library(readODS)
 library(httr)
 ```
+
+I'm interested in looking at road lengths across all years (2005-2015) and 
+
 
 ```{r read-data}
 
@@ -31,15 +34,34 @@ GET(url, write_disk("../data/ONS-GB-roads.ods", overwrite = T))
 
 #sheets we're interested in: c(seq(1,19,2),20)
 ons.roads <- read_ods("../data/ONS-GB-roads.ods", sheet = 1, skip = 6)
+range <- "A7:X213"
+sheets <- c(seq(1,19,2),20)
 
-View(ons.roads)
+ons.call <- function(sheet, col_names) { # sheet=vector of sheet numbers; col_names=names as 1st line - T/F
+  read_ods(url, sheet = sheet, col_names=TRUE, skip=6)
+}
 
+# ons.call <- function(sheet) {
+#   read_ods("../data/ONS-GB-roads.ods", sheet = sheet, skip=6)
+# }
 
+df <- lapply(c(1), ons.call)
 
+df
+rm(df)
 
-lappy()
-
+# df = do.call("rbind.data.frame", df) ## combine dfs from list
 ```
+
+Inspection of ONS-GB-roads.ods shows that:
+
+* There are 6 lines
+two extra Local Authorities were added 
+
+
+
+
+
 
 
 
