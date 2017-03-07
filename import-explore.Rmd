@@ -1,15 +1,49 @@
 ---
-title: "Road surface: import and explore"
+title: "UK road surface area: Part 1"
 author: "Mark Ruddy"
 date: "2017-02-27"
 output: html_notebook
+bibliography: /Users/markruddy/Documents/Research/Data/Bibliography/bibliodb.bib
 ---
 
-Data on road lengths in Great Britain can be found from the [Office for National Statistics (ONS)](https://www.gov.uk/government/statistical-data-sets/rdl02-road-lengths-kms). This is provided as road type by GB Local Authority from 2005 to 2015. A supplement also lists road lengths, with various data gaps, dating back to 1914.
+## Roads and the places we live
 
-The Ordnance Survey also holds information on road length in their [OS Open Roads](https://www.ordnancesurvey.co.uk/business-and-government/products/os-open-roads.html) product - available under the Open Government Licence ([OGL](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)). This could potentially allow any analysis to be broken down into smaller geographic areas than that achievable from the ONS data. But OS Open Roads only incldues Motorways, A-roads, B-roads.
+One of the things that interests me is the urban environment and how we travel around it. I use whatever type of transport seems best - car, bus, train, hovercraft (sadly not hovercraft) - depending on what I have to do and how far I have to go. But I ride a bike and walk most places because they tend to be the most convenient and attractive modes.
 
-Both datasets require assumptions on the width's of different road types. The ONS estimate includes OS data and additionally draws on information from Local Authorities, the Scottish and Welsh governments, and the Highways Agency. With the additional information present in the ONS data I decided to go with that as a basis for estimating road area.
+Walk or cycle around anywhere in the UK and it's not hard to see how much motor vehicles have shaped our world. Building roads is central to how our world has developed [^1]. The benefits to economies and quality of life this brings are set against an escalating series of problems: local air pollution, CO2 emissions, sedentary lifestyle issues, and road traffic mortality. There's a need for an urgent, fundamental shift away from decades of road-centred policy choices that have shaped the places we live in. Unfortunatley, legacy issues of [car dependency](https://en.wikipedia.org/wiki/Automobile_dependency) are hard to overcome and there is generally strong [local opposition](http://www.cs11.london/) to all but the weakest attempts to take road space from motor vehicles and give it to pedestrians and bicycle users.
+
+One aspect of how road design impacts people is the amount of space given over to roads, especially in places where people live. The design of our public space influences so much about society - health, economy, well-being - and road infrastructure is the portion of public space that [frames everything else](https://www.theguardian.com/books/2011/oct/14/jane-jacobs-death-and-life-rereading) [@jacobs:1961aa]. From [car parking](https://aseasyasridingabike.wordpress.com/2012/09/04/the-effect-of-private-car-dependence-on-land-use/) to 
+
+With attempts to push electric vehicles as the solution to pollution and transport sector CO2 emissions, the other [externalities](https://en.wikipedia.org/wiki/Externalities_of_automobiles) associated with motorised transport, of any sort, mustn't be forgotten. Electric cars are just as liable to kill and seriously injure or divide neighbourhoods [@appleyard:1981aa; Figure 1] as petrol-powered ones.
+
+<figure class="align-centre">
+  <a href="{{ site.url }}{{ site.baseurl }}/assets/images/geo-science/ois-plot.png"><img src="{{ site.url }}{{ site.baseurl }}/assets/images/general/appleyard-1981-fig3.png" alt="Appleyard et al. (1981). Intra-street social connections with differing traffic volumes."></a>
+  <figcaption>Appleyard et al. (1981). Intra-street social connections with differing traffic volumes.</figcaption>
+</figure> 
+
+
+## What is the length of the UK road network?
+
+1. How much surface area is taken up by the UK road network?
+2. How can this be broken down into urban/rural areas?
+
+## Approaches
+
+1. Use road length information and assumptions of road width to estimate area.
+2. Measure from OS or OSM.
+
+Advantage of 2 is that area can be broken down into smaller geographical areas. 
+
+
+
+## Available data
+
+
+Data on road lengths in Great Britain can be found from the [Office for National Statistics (ONS)](https://www.gov.uk/government/statistical-data-sets/rdl02-road-lengths-kms). This is provided for all road types by Local Authority from 2005 to 2015. A supplement also lists road lengths, with various data gaps, dating back to 1914.
+
+The Ordnance Survey also holds information on road length in their [OS Open Roads](https://www.ordnancesurvey.co.uk/business-and-government/products/os-open-roads.html) product - available under the Open Government Licence ([OGL](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)). This could potentially allow any analysis to be broken down into smaller geographic areas than that achievable from the ONS data. But OS Open Roads only incldues Motorways, A-roads, and B-roads.
+
+Both datasets require assumptions on the widths of different road types. The ONS estimate includes OS data and additionally draws on information from Local Authorities, the Scottish and Welsh governments, and the Highways Agency. With the additional information present in the ONS data I decided to go with that as a basis for estimating road area.
 
 ## ONS road length
 
@@ -94,10 +128,12 @@ lapply()
 
 
 
+## References
 
 
 
 
 
+[^1]: [Although they were originally built for bicycles](http://www.roadswerenotbuiltforcars.com/)
 
 
