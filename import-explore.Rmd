@@ -8,21 +8,34 @@ bibliography: /Users/markruddy/Documents/Research/Data/Bibliography/bibliodb.bib
 
 ## Roads and the places we live
 
-One of the things that interests me is the urban environment and how we travel around it. I use whatever type of transport seems best - car, bus, train, hovercraft (sadly not hovercraft) - depending on what I have to do and how far I have to go. But I ride a bike and walk most places because they tend to be the most convenient and attractive modes.
+One of the things that interests me is the urban environment and how we travel around it. I use whatever type of transport seems best - car, bus, train, hovercraft (actually not hovercraft) - depending on what I have to do and how far I have to go. But I ride a bike and walk most places because they tend to be the most convenient and attractive modes.
 
 Walk or cycle around anywhere in the UK and it's not hard to see how much motor vehicles have shaped our world. Building roads is central to how our world has developed [^1]. The benefits to economies and quality of life this brings are set against an escalating series of problems: local air pollution, CO2 emissions, sedentary lifestyle issues, and road traffic mortality. There's a need for an urgent, fundamental shift away from decades of road-centred policy choices that have shaped the places we live in. Unfortunatley, legacy issues of [car dependency](https://en.wikipedia.org/wiki/Automobile_dependency) are hard to overcome and there is generally strong [local opposition](http://www.cs11.london/) to all but the weakest attempts to take road space from motor vehicles and give it to pedestrians and bicycle users.
 
-One aspect of how road design impacts people is the amount of space given over to roads, especially in places where people live. The design of our public space influences so much about society - health, economy, well-being - and road infrastructure is the portion of public space that [frames everything else](https://www.theguardian.com/books/2011/oct/14/jane-jacobs-death-and-life-rereading) [@jacobs:1961aa]. From [car parking](https://aseasyasridingabike.wordpress.com/2012/09/04/the-effect-of-private-car-dependence-on-land-use/) to 
+One aspect of how road design impacts people is the amount of space given over to motor vehicles, especially in places where people live. The design of our public space influences so much about society - culture, economy, well-being - and road infrastructure is the portion of public space that [frames everything else](https://www.theguardian.com/books/2011/oct/14/jane-jacobs-death-and-life-rereading) [@jacobs:1961aa]. In fact, increasing numbers of cars mean that not only road space but duplicated [parking space](https://aseasyasridingabike.wordpress.com/2012/09/04/the-effect-of-private-car-dependence-on-land-use/) is also needed, seizing even more land.
 
-With attempts to push electric vehicles as the solution to pollution and transport sector CO2 emissions, the other [externalities](https://en.wikipedia.org/wiki/Externalities_of_automobiles) associated with motorised transport, of any sort, mustn't be forgotten. Electric cars are just as liable to kill and seriously injure or divide neighbourhoods [@appleyard:1981aa; Figure 1] as petrol-powered ones.
+With attempts to push electric vehicles as the solution to pollution and transport sector CO2 emissions, the other [externalities](https://en.wikipedia.org/wiki/Externalities_of_automobiles) associated with motorised transport of any sort mustn't be forgotten. Electric cars are just as capable of killing and seriously injuring people or dividing neighbourhoods - see this lovely graphic in Figure 1 by @appleyard:1981aa - as petrol-powered ones.
 
 <figure class="align-centre">
-  <a href="{{ site.url }}{{ site.baseurl }}/assets/images/geo-science/ois-plot.png"><img src="{{ site.url }}{{ site.baseurl }}/assets/images/general/appleyard-1981-fig3.png" alt="Appleyard et al. (1981). Intra-street social connections with differing traffic volumes."></a>
-  <figcaption>Appleyard et al. (1981). Intra-street social connections with differing traffic volumes.</figcaption>
-</figure> 
+  <a href="xresources/assets/images/geo-science/ois-plot.png"><img src="xresources/assets/images/general/appleyard-1981-fig3.png" alt="@appleyard:1981aa. Intra-street social connections with differing traffic volumes."></a>
+  <figcaption>Figure 1. @appleyard:1981aa. Intra-street social connections with differing traffic volumes.</figcaption>
+</figure>
 
 
 ## What is the length of the UK road network?
+
+It was a conversation with my 6 year-old daughter that got me to thinking exactly how much of the surface area of the places we live in is occupied by roads. I have little time on my hands at the moment so decided to try and work it out. 
+
+There are two ways to go about this:
+
+1. Use actual width and length data of the UK road network to produce a figure.
+  * This is held by the [Ordnance Survey](https://www.ordnancesurvey.co.uk/). BUT it's £££s to obtain.
+  * [OpenStreetMap](https://www.openstreetmap.org) has built a highly detailed geographic dataset that contains a road width attribute. Whilst the mapping coverage of the road network as line data is very good, the presence of a width attribute is not 
+2. Use road length data with estimates of road width for different types of roads.
+
+
+
+
 
 1. How much surface area is taken up by the UK road network?
 2. How can this be broken down into urban/rural areas?
