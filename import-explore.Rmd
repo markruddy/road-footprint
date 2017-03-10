@@ -75,6 +75,7 @@ library(httr)
 ```{r get-data}
 ## Get .ods file and save 
 url <- "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/523715/rdl0202.ods"
+
 GET(url, write_disk("./ONS-GB-roads.ods", overwrite = T))
 ```
 
@@ -89,9 +90,12 @@ There's no substitute for opening a spreadsheet to quickly get a grasp on how mu
 
 ```{r read-sheet-names}
 path <- "./ONS-GB-roads.ods"
+
 sheets <- ods_sheets(path)
+
 my.sheets <- sheets[grepl("RDL0202a", sheets)] ## Get sheets we're interested in
 
+years <- unlist(regmatches(my.sheets, gregexpr("(?<=\\().*?(?=\\))", my.sheets, perl=T))) ## Get the years for each sheet
 
 
 ## Function to call read_ods for each sheet
@@ -103,17 +107,9 @@ rdl.list <- lapply(my.sheets, ons.call)
 ```
 
 ```{r test-sub}
-my.sheets <- sheets[grepl("RDL0202a", sheets)] ## Get sheets we're interested in
 
-test.string <- "RDL0202a_(2015)"
 
-unlist(lapply(my.sheets, function(i) strsplit(i, "_\\(")))
 
-sub(".+(?<=\\()", "", test.string, perl = TRUE)
-
-# (?=\\))
-
-sub("[0-9]{4}", "", my.sheets)
 
 ```
 
