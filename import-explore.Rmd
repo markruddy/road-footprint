@@ -57,63 +57,79 @@ The OS [Open Roads](https://www.ordnancesurvey.co.uk/business-and-government/pro
 
 The ONS and OS Open Roads datasets look to be useful. The ONS estimate includes OS data and additionally draws on information from Local Authorities, the Scottish and Welsh governments, and the Highways Agency. Although, with ONS there's no opportunity to do more detailed geographic analysis. 
 
-Both datasets require assumptions on the widths of different road types, which we'll look at in a later post. I have an initial thought that although the OSM include an optional width attribute, where width is present it might be useful for sense-checking.
+Both datasets require assumptions on the widths of different road types, which we'll look at in a later post. I have an initial thought that although the OSM include an optional width attribute, where width is present it might be useful for sense-checking (?).
 
 As a first pass let's use the ONS data and have a go with OS Open Roads later. I'll be using R to import, tidy, and explore the data. First thing, import.
 
 
 ## ONS road length
 
-Down to business. The ONS dataset is delivered as OpenOffice .ods spreadsheet. Here's some R for import.
+The ONS dataset is delivered as an OpenOffice .ods spreadsheet. We'll bring this into R for flexibility.
 
-```{r load-packages, include=TRUE}
+```{r load-packages, include=TRUE, warning=FALSE}
 ## Load packages
-library(tidyverse)
 library(readODS)
 library(httr)
 ```
 
 ```{r get-data}
+## Get .ods file and save 
 url <- "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/523715/rdl0202.ods"
-GET(url, write_disk("../data/ONS-GB-roads.ods", overwrite = T))
+GET(url, write_disk("./ONS-GB-roads.ods", overwrite = T))
 ```
 
-Opening and inpecting the .ods file let's us know what we are in for in terms of 
+There's no substitute for opening a spreadsheet to quickly get a grasp on how much effort is needed to import it into R and make the contents tidy [@tidy-data]. There are some specific issues with this dataset:
 
-
-Inspecting ONS-GB-roads.ods in OpenOffice shows that:
-
-* There are 6 lines to skip before the dataset begins.
+* There are 6 rows to skip before the dataset begins.
+* There are rows of meta-data below cells containing the dataset.
 * Sheets contain different types of road length information. Those sheets with names prefixed "RDL0202a"" contain Motorway, 'A' road, and Minor road data broken down by Local authority. These eleven sheets (years) are the data we're interested in.
-* The cell range of the dataset (including column names) is:
-  * A7:Z211 for 2005 to 2008; 
-  * A7:Z213 from 2009 to 2012 
-    - Rural 'C' and 'U', and Urban 'C' and 'U' are separate up to 2013.
-    - Cheshire UA is split into Cheshire East UA, and Cheshire West and Chester UA from 2009.
-    - Bedfordshire is split into Bedford UA and Central Bedfordshire UA from 2009.
-  * and A7:X213 from 2013 to 2015 - Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013.
-* There is a variety of lines of meta-data below cells containing the dataset.
+* There are blank columns within the dataset that seem to serve an aesthetic purpose separating groups of road classes. 
 
 
 
-```{r read-into-r}
-## I set a 'data' folder as a sub-driectory of the working directory
-path <- "../data/ONS-GB-roads.ods"
-ons.roads <- read_ods(path, sheet = 1, skip = 6)
+```{r read-sheet-names}
+path <- "./ONS-GB-roads.ods"
+sheets <- ods_sheets(path)
+my.sheets <- sheets[grepl("RDL0202a", sheets)] ## Get sheets we're interested in
 
-## Sheets we're interested in
-sheets <- c(seq(1,19,2),20)
 
-ons.call <- function(sheet, range) {
-  read_ods(path, sheet = sheet, col_names = F, skip = 6) #skip =6, range = "A7:Z213"
+
+## Function to call read_ods for each sheet
+ons.call <- function(sheet) {
+  read_ods(path, sheet = sheet, col_names = TRUE, skip = 6)
 } 
 
-rdl.list <- lapply(sheets, ons.call)
+rdl.list <- lapply(my.sheets, ons.call)
 ```
 
-Having read data on road length from the .ods sheets we need to clean it up. A number of differences in the dimensions of the dataset were highlighted above. We need to harmonise each list element (sheet) in order to combine them all together and make them 'tidy' for analysis.
+```{r test-sub}
+my.sheets <- sheets[grepl("RDL0202a", sheets)] ## Get sheets we're interested in
 
-I could do all this manipulation in the spreadsheet but the time spent manually tinkering to give the format needed is not time well spent. Some of the operations are repetative and getting them down in R enables them to be applied across all eleven years. Also, it's a good R learning experience.
+test.string <- "RDL0202a_(2015)"
+
+unlist(lapply(my.sheets, function(i) strsplit(i, "_\\(")))
+
+sub(".+(?<=\\()", "", test.string, perl = TRUE)
+
+# (?=\\))
+
+sub("[0-9]{4}", "", my.sheets)
+
+```
+
+
+```{r check-import}
+sapply(rdl.list, dim)
+
+
+```
+
+
+
+Having read-in data on road length from the .ods sheets we need to clean it up. A number of differences in the dimensions of the dataset were highlighted above. I could do all this manipulation in the spreadsheet but the time spent manually tinkering to give the format needed is not time well spent. Some of the operations are repetative and getting them down in R enables them to be applied across all eleven years. Also, it's a good R learning experience.
+
+We need to harmonise each list element (sheet) in order to combine them all together and make them 'tidy' for analysis.
+
 
 ## Bringing the whole road length dataset together
 
@@ -130,14 +146,19 @@ What are the steps that need to be taken to combine all the road length data tog
 
 ```{r tidy}
 head(rdl.list[[1]])
-
 lapply()
-
 
 # rdl = do.call("rbind.data.frame", rdl.list) ## combine dfs from list
 ```
 
-
+<!--* The cell range of the dataset (including column names) is:
+  * A7:Z211 for 2005 to 2008; 
+  * A7:Z213 from 2009 to 2012 
+    - This is because:
+    - Rural 'C' and 'U', and Urban 'C' and 'U' roads are separate up to 2013 but combined afterwards.
+    - Cheshire UA is split into Cheshire East UA, and Cheshire West and Chester UA after 2009.
+    - Bedfordshire is split into Bedford UA and Central Bedfordshire UA after 2009.
+--> 
 
 
 
