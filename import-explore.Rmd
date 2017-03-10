@@ -86,14 +86,14 @@ There's no substitute for opening a spreadsheet to quickly get a grasp on how mu
 * Sheets contain different types of road length information. Those sheets with names prefixed "RDL0202a"" contain Motorway, 'A' road, and Minor road data broken down by Local authority. These eleven sheets (years) are the data we're interested in.
 * There are blank columns within the dataset that seem to serve an aesthetic purpose separating groups of road classes. 
 
+So, this is not at all tidy and needs a fair bit of work to lick it into shape.
 
-
-```{r read-sheet-names}
+```{r read-sheets}
 path <- "./ONS-GB-roads.ods"
 
 sheets <- ods_sheets(path)
 
-my.sheets <- sheets[grepl("RDL0202a", sheets)] ## Get sheets we're interested in
+my.sheets <- sheets[grepl("RDL0202a", sheets)] ## Get sheet names we're interested in
 
 years <- unlist(regmatches(my.sheets, gregexpr("(?<=\\().*?(?=\\))", my.sheets, perl=T))) ## Get the years for each sheet
 
@@ -103,15 +103,17 @@ ons.call <- function(sheet) {
   read_ods(path, sheet = sheet, col_names = TRUE, skip = 6)
 } 
 
+## Read sheets as list of dfs 
 rdl.list <- lapply(my.sheets, ons.call)
+
+## Add column with year to each df
+rdl.list.yrs <- Map(cbind, rdl.list, years)
+
+rdl.list.yrs <- lapply(rdl.list.yrs, function(x) {colnames(x)[ncol(x)] <- "Year"; x})
+
+lapply(rdl.list.yrs, function(x) select_(x, "Year"))
 ```
 
-```{r test-sub}
-
-
-
-
-```
 
 
 ```{r check-import}
