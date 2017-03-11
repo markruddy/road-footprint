@@ -97,7 +97,6 @@ my.sheets <- sheets[grepl("RDL0202a", sheets)] ## Get sheet names we're interest
 
 years <- unlist(regmatches(my.sheets, gregexpr("(?<=\\().*?(?=\\))", my.sheets, perl=T))) ## Get the years for each sheet
 
-
 ## Function to call read_ods for each sheet
 ons.call <- function(sheet) {
   read_ods(path, sheet = sheet, col_names = TRUE, skip = 6)
@@ -111,12 +110,26 @@ rdl.list.yrs <- Map(cbind, rdl.list, years)
 
 rdl.list.yrs <- lapply(rdl.list.yrs, function(x) {colnames(x)[ncol(x)] <- "Year"; x})
 
-lapply(rdl.list.yrs, function(x) select_(x, "Year"))
+# lapply(rdl.list.yrs, function(x) select_(x, "Year"))
+```
+
+```{r check-year-sheet}
+## Check the year matches the correct sheet
+
+chk.yr <- sheets[grepl(".+a.+2010.+", sheets)] ## Get sheet names we're interested in
+chk.list <- lapply(chk.yr, ons.call)
+tail(chk.list[[1]][ncol(chk.list[[1]])])
+
+chk.2010 <- lapply(rdl.list.yrs, function(x) {
+  if (distinct_(x["Year"])==2010) {x}})
+
+chk.2010 <- chk.2010[!unlist(lapply(chk.2010, is.null))]
+tail(chk.2010[[1]][ncol(chk.2010[[1]])-1])
 ```
 
 
 
-```{r check-import}
+```{r check-import-dims}
 sapply(rdl.list, dim)
 
 
