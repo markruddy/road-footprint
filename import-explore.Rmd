@@ -62,11 +62,23 @@ Both datasets require assumptions on the widths of different road types, which w
 As a first pass let's use the ONS data and have a go with OS Open Roads later. I'll be using R to import, tidy, and explore the data. First thing, import.
 
 
-## ONS road length
+## Wrangling ONS road length
 
-The ONS dataset is delivered as an OpenOffice .ods spreadsheet. We'll bring this into R for flexibility.
+### Import 
 
-```{r load-packages, include=TRUE, warning=FALSE}
+The ONS dataset is delivered as an OpenOffice .ods spreadsheet. We'll bring this into R for flexibility and reproducibility.
+
+There's no substitute for opening a spreadsheet to quickly get a grasp on how much effort is needed to import it into R. Some specific issues to note with this dataset are:
+
+* There are 6 rows to skip before the dataset begins.
+* There are rows of meta-data below cells containing the dataset.
+* There are twenty worksheets containing different types of road length information by year. Those sheets with names prefixed "RDL0202a"" contain Motorway, 'A' road, and Minor road data broken down by Local authority. These eleven sheets (years) are the data we're interested in.
+* There are blank columns within each sheet that seem to serve an aesthetic purpose, separating groups of road classes. 
+* Data extend over different cell ranges for different sheets.
+
+So, this is not at all tidy and needs a fair bit of work to lick it into shape.```{r load-packages, include=TRUE, warning=FALSE}
+
+``` {r packages}
 ## Load packages
 library(readODS)
 library(httr)
@@ -79,81 +91,112 @@ url <- "https://www.gov.uk/government/uploads/system/uploads/attachment_data/fil
 GET(url, write_disk("./ONS-GB-roads.ods", overwrite = T))
 ```
 
-There's no substitute for opening a spreadsheet to quickly get a grasp on how much effort is needed to import it into R and make the contents tidy [@tidy-data]. There are some specific issues with this dataset:
-
-* There are 6 rows to skip before the dataset begins.
-* There are rows of meta-data below cells containing the dataset.
-* Sheets contain different types of road length information. Those sheets with names prefixed "RDL0202a"" contain Motorway, 'A' road, and Minor road data broken down by Local authority. These eleven sheets (years) are the data we're interested in.
-* There are blank columns within the dataset that seem to serve an aesthetic purpose separating groups of road classes. 
-
-So, this is not at all tidy and needs a fair bit of work to lick it into shape.
 
 ```{r read-sheets}
+## Get sheet names we're interested in
 path <- "./ONS-GB-roads.ods"
-
 sheets <- ods_sheets(path)
-
-my.sheets <- sheets[grepl("RDL0202a", sheets)] ## Get sheet names we're interested in
-
-years <- unlist(regmatches(my.sheets, gregexpr("(?<=\\().*?(?=\\))", my.sheets, perl=T))) ## Get the years for each sheet
+my.sheets <- sheets[grepl("RDL0202a", sheets)] 
+rm(sheets)
 
 ## Function to call read_ods for each sheet
 ons.call <- function(sheet) {
   read_ods(path, sheet = sheet, col_names = TRUE, skip = 6)
-} 
+}
 
 ## Read sheets as list of dfs 
 rdl.list <- lapply(my.sheets, ons.call)
+```
 
+
+Each worksheet is read-in to R as a separate dataframe element within a list. These dataframes have slightly different structures, and we need to make them the same in order to combine them all together and make something 'tidy' [@tidy-data] for analysis. 
+
+Some specific actions:
+
+1. Add a year column to each list element.
+2. Remove empty columns.
+3. Remove non-data space below dataset.
+4. Harmonise rows and columns between sheets.
+
+### Add year 
+
+```{r add-year}
 ## Add column with year to each df
-rdl.list.yrs <- Map(cbind, rdl.list, years)
-
-rdl.list.yrs <- lapply(rdl.list.yrs, function(x) {colnames(x)[ncol(x)] <- "Year"; x})
-
-# lapply(rdl.list.yrs, function(x) select_(x, "Year"))
+years <- unlist(regmatches(my.sheets, gregexpr("(?<=\\().*?(?=\\))", my.sheets, perl=T))) ## Get the years for each sheet
+rdl.list <- Map(cbind, rdl.list, years)
+rdl.list <- lapply(rdl.list, function(x) {colnames(x)[ncol(x)] <- "Year"; x})
 ```
 
-```{r check-year-sheet}
-## Check the year matches the correct sheet
 
-chk.yr <- sheets[grepl(".+a.+2010.+", sheets)] ## Get sheet names we're interested in
-chk.list <- lapply(chk.yr, ons.call)
-tail(chk.list[[1]][ncol(chk.list[[1]])])
+```{r check-year-sheet, echo=FALSE}
+## Cross check the year added to the dfs. Compare a column of road length values between sheet and df for match.
 
-chk.2010 <- lapply(rdl.list.yrs, function(x) {
-  if (distinct_(x["Year"])==2010) {x}})
+## Pick sheet to cross check
+chk.yr <- my.sheets[grepl("2010", my.sheets)] ## Get sheet we're interested in checking
+chk.list <- lapply(chk.yr, ons.call) ## List of dfs to check
 
+## Pick df for cross check
+chk.2010 <- lapply(rdl.list, function(x) {
+  if (distinct_(x["Year"])==2010) {x}}) 
 chk.2010 <- chk.2010[!unlist(lapply(chk.2010, is.null))]
-tail(chk.2010[[1]][ncol(chk.2010[[1]])-1])
+
+## Get Total road length from df and sheet and compare
+identical(chk.2010[[1]][ncol(chk.2010[[1]])-1], chk.list[[1]][ncol(chk.list[[1]])])
+
+## Clean up 
+rm(list=setdiff(ls(), "rdl.list"))
 ```
+
+
+### Remove empty columns
+
+```{r tidy-packages}
+library(tidyverse)
+```
+
+```{r remove-empty-columns}
+test.df <- rdl.list[[1]]
+
+is.na(test.df)
+
+sapply(test.df, function(x) all(is.na(x)))
+
+remove.empty.col <- function(df) {
+  cols <- colnames(df)
+
+}
+
+sapply(test.df, )
+
+```
+
+
 
 
 
 ```{r check-import-dims}
 sapply(rdl.list, dim)
-
-
+## Dataframes different sizes
 ```
 
+First, lets remove all empty columns
 
 
-Having read-in data on road length from the .ods sheets we need to clean it up. A number of differences in the dimensions of the dataset were highlighted above. I could do all this manipulation in the spreadsheet but the time spent manually tinkering to give the format needed is not time well spent. Some of the operations are repetative and getting them down in R enables them to be applied across all eleven years. Also, it's a good R learning experience.
 
-We need to harmonise each list element (sheet) in order to combine them all together and make them 'tidy' for analysis.
+<!-- post-2009:  -->
+<!--   - Cheshire UA is split into Cheshire East UA, and Cheshire West and Chester UA from 2009. -->
+<!--   - Bedfordshire is split into Bedford UA and Central Bedfordshire UA from 2009.  -->
+<!-- 5. Harmonise columns: -->
+<!--   - From 2013 to 2015 - Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013. -->
+
+
 
 
 ## Bringing the whole road length dataset together
 
 What are the steps that need to be taken to combine all the road length data together into a single dataset?
 
-1. Add a year column to each list element.
-2. Remove NULL, NA or "" columns.
-3. Remove non-data space below dataset.
-4. Harmonise rows post-2009: 
-  - Cheshire UA is split into Cheshire East UA, and Cheshire West and Chester UA from 2009.
-  - Bedfordshire is split into Bedford UA and Central Bedfordshire UA from 2009. 
-5. Harmonise columns:
-  - From 2013 to 2015 - Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013.
+
 
 ```{r tidy}
 head(rdl.list[[1]])
