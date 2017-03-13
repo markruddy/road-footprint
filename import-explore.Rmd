@@ -142,8 +142,9 @@ chk.2010 <- chk.2010[!unlist(lapply(chk.2010, is.null))]
 
 ## Get Total road length from df and sheet and compare
 identical(chk.2010[[1]][ncol(chk.2010[[1]])-1], chk.list[[1]][ncol(chk.list[[1]])])
+```
 
-## Clean up 
+```{r clean-up1}
 rm(list=setdiff(ls(), "rdl.list"))
 ```
 
@@ -155,32 +156,35 @@ library(tidyverse)
 ```
 
 ```{r remove-empty-columns}
-test.df <- rdl.list[[1]]
-
-is.na(test.df)
-
-sapply(test.df, function(x) all(is.na(x)))
-
-remove.empty.col <- function(df) {
-  cols <- colnames(df)
-
+## Function to find NA columns in dataframe
+na.cols <- function(df) {
+  df.nas <- vapply(df, function(x) all(is.na(x)), logical(1))
+  df.clean <- df[,!df.nas]
+  df.clean
 }
 
-sapply(test.df, )
+## lapply over list of dfs
+rdl.full <- lapply(rdl.list, na.cols)
 
+## Clean up 
+rm(na.cols)
 ```
 
 
+### Remove non-data space below dataset.
 
+After a little bit of thought there didn't seem to be an simple, quick to build way to auto-check for cells below the dataset that were meta-data. Removing rows with long character strings or that had all NAs would work but it was easiest to visually inpect each dataframes to get the range of the dataset proper. 
 
+Viewing the tails of the dataframes shows that between 2009-2015 there are 206 rows of data and for 2005-2008 there are 204 rows. We'll identify the 
 
-```{r check-import-dims}
-sapply(rdl.list, dim)
-## Dataframes different sizes
+```{r clean-below-data}
+tail(rdl.list.full[[1]], 11)
+
+## Could remove all rows where len(ONS Area Code) > 9 or NA
+
+rm(rdl.list.full)
+
 ```
-
-First, lets remove all empty columns
-
 
 
 <!-- post-2009:  -->
