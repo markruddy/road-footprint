@@ -76,7 +76,7 @@ There's no substitute for opening a spreadsheet to quickly get a grasp on how mu
 * There are blank columns within each sheet that seem to serve an aesthetic purpose, separating groups of road classes. 
 * Data extend over different cell ranges for different sheets.
 
-So, this is not at all tidy and needs a fair bit of work to lick it into shape.```{r load-packages, include=TRUE, warning=FALSE}
+So, this is not at all tidy and needs a fair bit of work to lick it into shape.
 
 ``` {r packages}
 ## Load packages
@@ -164,7 +164,7 @@ na.cols <- function(df) {
 }
 
 ## lapply over list of dfs
-rdl.full <- lapply(rdl.list, na.cols)
+rdl <- lapply(rdl.list, na.cols)
 
 ## Clean up 
 rm(na.cols)
@@ -173,17 +173,11 @@ rm(na.cols)
 
 ### Remove non-data space below dataset.
 
-After a little bit of thought there didn't seem to be an simple, quick to build way to auto-check for cells below the dataset that were meta-data. Removing rows with long character strings or that had all NAs would work but it was easiest to visually inpect each dataframes to get the range of the dataset proper. 
-
-Viewing the tails of the dataframes shows that between 2009-2015 there are 206 rows of data and for 2005-2008 there are 204 rows. We'll identify the 
+Viewing the tails of the dataframes shows that between 2009-2015 there are 206 rows of data and for 2005-2008 there are 204 rows. Metadata from each worksheet are found in the first and penultimate column and consist of long strings of text or NAs that extend partially or fully across the row. Most columns don't contain any metadata so the non-data rows at the end of the dataframe can be dropped by filtering out NAs from a column such as 'Region'.
 
 ```{r clean-below-data}
-tail(rdl.list.full[[1]], 11)
-
-## Could remove all rows where len(ONS Area Code) > 9 or NA
-
-rm(rdl.list.full)
-
+## Drop all NA rows in Region column
+rdl <- lapply(rdl, function(x) x[!is.na(x$Region),])
 ```
 
 
