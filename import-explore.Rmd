@@ -116,7 +116,8 @@ Some specific actions:
 1. Add a year column to each list element.
 2. Remove empty columns.
 3. Remove non-data space below dataset.
-4. Harmonise rows and columns between sheets.
+4. Harmonise rows between sheets.
+5. Combine dataframe elements from within list and make tidy.
 
 ### Add year 
 
@@ -125,20 +126,21 @@ Some specific actions:
 years <- unlist(regmatches(my.sheets, gregexpr("(?<=\\().*?(?=\\))", my.sheets, perl=T))) ## Get the years for each sheet
 rdl.list <- Map(cbind, rdl.list, years)
 rdl.list <- lapply(rdl.list, function(x) {colnames(x)[ncol(x)] <- "Year"; x})
+
+## Name df list elements
+names(rdl.list) <- years
 ```
 
 
-```{r check-year-sheet, echo=FALSE}
+```{r check-year-sheet, include=FALSE}
 ## Cross check the year added to the dfs. Compare a column of road length values between sheet and df for match.
 
-## Pick sheet to cross check
+## Pick worksheet to cross check
 chk.yr <- my.sheets[grepl("2010", my.sheets)] ## Get sheet we're interested in checking
 chk.list <- lapply(chk.yr, ons.call) ## List of dfs to check
 
-## Pick df for cross check
-chk.2010 <- lapply(rdl.list, function(x) {
-  if (distinct_(x["Year"])==2010) {x}}) 
-chk.2010 <- chk.2010[!unlist(lapply(chk.2010, is.null))]
+## Pick df from df list for cross check
+chk.2010 <- rdl.list["2010"]
 
 ## Get Total road length from df and sheet and compare
 identical(chk.2010[[1]][ncol(chk.2010[[1]])-1], chk.list[[1]][ncol(chk.list[[1]])])
@@ -164,7 +166,7 @@ na.cols <- function(df) {
 }
 
 ## lapply over list of dfs
-rdl <- lapply(rdl.list, na.cols)
+rdl.list.full <- lapply(rdl.list, na.cols)
 
 ## Clean up 
 rm(na.cols)
@@ -173,11 +175,69 @@ rm(na.cols)
 
 ### Remove non-data space below dataset.
 
-Viewing the tails of the dataframes shows that between 2009-2015 there are 206 rows of data and for 2005-2008 there are 204 rows. Metadata from each worksheet are found in the first and penultimate column and consist of long strings of text or NAs that extend partially or fully across the row. Most columns don't contain any metadata so the non-data rows at the end of the dataframe can be dropped by filtering out NAs from a column such as 'Region'.
+Metadata from each worksheet are found in the first and penultimate column and consist of long strings of text or NAs that extend partially or fully across the row. Most columns don't contain any metadata so the non-data rows at the end of the dataframe can be dropped by filtering out NAs from a column such as 'Region'.
 
 ```{r clean-below-data}
 ## Drop all NA rows in Region column
-rdl <- lapply(rdl, function(x) x[!is.na(x$Region),])
+rdl.list.full <- lapply(rdl.list.full, function(x) x[!is.na(x$Region),])
+```
+
+
+### Harmonise rows between sheets
+
+Dataframes between 2009-2015 have 206 rows but ones for 2005-2008 have 204 rows. What's causing this? The dataset is a summary of road lengths broken down by Local Authority, so Local Authority should be a 'key' between datasets and any differences in numbers of rows should be reflected in Local Authority values.
+
+
+```{r diffs-toy}
+## Toy example
+tdf1 <- tibble(key = 1:4, x1 = LETTERS[1:4], x2 = LETTERS[2:5])
+tdf2 <- tibble(key = 1:4, x1 = LETTERS[1:4], x2 = LETTERS[3:6])
+tdf3 <- tibble(key = 1:4, x1 = LETTERS[c(1:3,5)], x2 = LETTERS[4:7])
+toy.list <- list(tdf1,tdf2, tdf3)
+names(toy.list) <- c("2000","2001","2002")
+
+lapply(toy.list, `[[`, 2) %>% 
+  data.frame %>% 
+  add_rownames("key") %>% 
+  gather(x, value, -key) %>% 
+  group_by(key) %>% 
+  count(value) %>% 
+  filter(n < ncol())
+
+
+
+
+
+```
+
+
+```{r row-differences}
+## Check for difference between Local Authorities *within* the 2005-2008 or 2009-2015 groups
+
+## 2005-2008
+rdl.1 <- rdl.list.full[c("2005", "2006", "2007", "2008")]
+
+
+## Function to find differences between columns in a list of dataframes
+## 
+dflist.col.diffs <- function(dfl) { # x=list of dfs with element names
+  comb <- combn(names(dfl), 2) # combinations of dataframes
+  a.name <- comb[1,]
+  b.name <- comb[2,]
+  
+  ## Funciton to compare contents of 2 columns from dataframe list
+  compare.cols <- function(a.name, b.name) { # 2 vectors from list name combinations
+    
+  
+  
+  }
+  
+  
+}
+
+  
+rdl.1 %>% 
+
 ```
 
 
@@ -223,3 +283,4 @@ lapply()
 [^1]: [Although they were originally built for bicycles](http://www.roadswerenotbuiltforcars.com/)
 
 
+s
