@@ -196,18 +196,16 @@ tdf3 <- tibble(key = 1:4, x1 = LETTERS[c(1:3,5)], x2 = LETTERS[4:7])
 toy.list <- list(tdf1,tdf2, tdf3)
 names(toy.list) <- c("2000","2001","2002")
 
-lapply(toy.list, `[[`, 2) %>% 
-  data.frame %>% 
-  add_rownames("key") %>% 
+## Use dplyr:: and tidy:: to count values in grouped rows 
+toy.df <- lapply(toy.list, `[[`, 2) %>% 
+  data.frame
+
+toy.count <- toy.df %>% 
+  rownames_to_column("key") %>% 
   gather(x, value, -key) %>% 
   group_by(key) %>% 
   count(value) %>% 
-  filter(n < ncol())
-
-
-
-
-
+  filter(n < ncol(toy.df))
 ```
 
 
