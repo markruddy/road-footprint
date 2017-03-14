@@ -206,6 +206,9 @@ toy.count <- toy.df %>%
   group_by(key) %>% 
   count(value) %>% 
   filter(n < ncol(toy.df))
+
+## Clean up 
+rm(list = ls(pattern = "^t"))
 ```
 
 
