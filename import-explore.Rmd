@@ -111,13 +111,14 @@ rdl.list <- lapply(my.sheets, ons.call)
 
 Each worksheet is read-in to R as a separate dataframe element within a list. These dataframes have slightly different structures, and we need to make them the same in order to combine them all together and make something 'tidy' [@tidy-data] for analysis. 
 
-Some specific actions:
+Specific actions:
 
 1. Add a year column to each list element.
 2. Remove empty columns.
 3. Remove non-data space below dataset.
 4. Harmonise rows between sheets.
-5. Combine dataframe elements from within list and make tidy.
+5. Harmonise columns: from 2013 to 2015 - Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013.
+6. Combine dataframe elements from within list and make tidy.
 
 ### Add year 
 
@@ -196,10 +197,12 @@ tdf3 <- tibble(key = 1:4, x1 = LETTERS[c(1:3,5)], x2 = LETTERS[4:7])
 toy.list <- list(tdf1,tdf2, tdf3)
 names(toy.list) <- c("2000","2001","2002")
 
-## Use dplyr:: and tidy:: to count values in grouped rows 
+## Use lapply to convert to dataframe
+## h/t to http://stackoverflow.com/a/29273078/2802810
 toy.df <- lapply(toy.list, `[[`, 2) %>% 
   data.frame
 
+## Use dplyr:: and tidy:: to count values in grouped rows 
 toy.count <- toy.df %>% 
   rownames_to_column("key") %>% 
   gather(x, value, -key) %>% 
@@ -212,42 +215,88 @@ rm(list = ls(pattern = "^t"))
 ```
 
 
-```{r row-differences}
-## Check for difference between Local Authorities *within* the 2005-2008 or 2009-2015 groups
-
-## 2005-2008
-rdl.1 <- rdl.list.full[c("2005", "2006", "2007", "2008")]
-
-
-## Function to find differences between columns in a list of dataframes
-## 
-dflist.col.diffs <- function(dfl) { # x=list of dfs with element names
-  comb <- combn(names(dfl), 2) # combinations of dataframes
-  a.name <- comb[1,]
-  b.name <- comb[2,]
-  
-  ## Funciton to compare contents of 2 columns from dataframe list
-  compare.cols <- function(a.name, b.name) { # 2 vectors from list name combinations
-    
-  
-  
+```{r get-dataframe-col-years}
+## Function to obtain dataframe of 1 column from dataframes in list of dataframes
+## dfl=list of dataframes; years=vector of years, string or numeric; c=column number to retain
+df.years <- function(dfl, years, c) { 
+  if (is.numeric(years)) { 
+    years <- as.character(years)
   }
+  stopifnot(is.character(years)) ## Assertion
+  dfl.yrs <- dfl[years]
+  df.yrs <- lapply(dfl.yrs, `[[`, c) %>%
+  data.frame %>% 
+  rownames_to_column("key") %>% 
+  gather(years, value, -key)
   
-  
+  return(df.yrs)
 }
-
-  
-rdl.1 %>% 
-
 ```
 
 
-<!-- post-2009:  -->
-<!--   - Cheshire UA is split into Cheshire East UA, and Cheshire West and Chester UA from 2009. -->
-<!--   - Bedfordshire is split into Bedford UA and Central Bedfordshire UA from 2009.  -->
-<!-- 5. Harmonise columns: -->
-<!--   - From 2013 to 2015 - Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013. -->
+```{r row-diffs-2005-2008}
+## Check for difference between Local Authorities *within* the 2005-2008 group
+yrs.5_8 <- df.years(rdl.list.full, c("2005", "2006", "2007", "2008"), 3) ## c=3 is Local Authority column
 
+## 
+yrs.5_8.count <-  yrs.5_8 %>% 
+  group_by(key) %>% 
+  count(value) %>% 
+  filter(n < ncol(yrs.5_8))
+
+## No issues
+```
+
+```{r row-diffs-2009-2015}
+## Check for difference between Local Authorities *within* the 2009-2015 group
+yrs.9_15 <- df.years(rdl.list.full, c("2009", "2010", "2011", "2012", "2013", "2014", "2015"), 3) ## c=3 is Local Authority column
+
+## 
+yrs.9_15.count <-  yrs.9_15 %>% 
+  group_by(key) %>% 
+  count(value) %>% 
+  filter(n < ncol(yrs.9_15))
+
+## 1 difference at row 187. 'Na h-Eileanan Siar' in 2015 cf 'Eilean Siar' for other years
+
+yrs.9_15 %>% 
+  spread(years, value) %>% 
+  filter(key==187)
+
+## Clean up 
+rm(list = ls(pattern = "^yrs"))
+```
+Shows that the LA 'Eilean Siar' (formerly [Western Isles](https://en.wikipedia.org/wiki/Na_h-Eileanan_an_Iar_(UK_Parliament_constituency))) changed its name to 'Na h-Eileanan Siar' in the 2015 worksheet. For consistency we'll change it throughout the whole dataset to Na h-Eileanan Siar.
+  
+* Change Eileanan Siar to Na h-Eileanan Siar
+
+
+```{r row-diffs-2005-2008_2009-2015}
+## What cause the 2 row difference between 2005-2008 (204 rows) and 2009-2015 (206 rows)?
+
+## First get dataframes of 2 representative years - we know there are no other LA differences for these and similar row-numbered groups
+yrs.2008 <- df.years(rdl.list.full, c("2008"), 3) %>%  ## c=3 is Local Authority column
+  select(-years, -key)
+yrs.2009 <- df.years(rdl.list.full, c("2009"), 3) %>% ## c=3 is Local Authority column
+  select(-years, -key)
+
+## Now join one to other using Local Authority as key
+setdiff(yrs.2009, yrs.2008)
+```
+Four Local Authorities appear from 2009-2015 but not 2005-2008. A little research shows that these were formed in 2009 as part of [structural local government changes](https://en.wikipedia.org/wiki/Cheshire_East). Two new LAs by splitting Cheshire and two new ones from splitting Bedfordshire. We'll check the 2008 dataframe to see if these pre-split LAs are present.
+
+```{r query-2008-LAs}
+## Query 2008 to confirm there are rows correspnding with Chester adn Bedfordshire
+tdf <- df.years(rdl.list.full, c("2008"), 3) %>% ## c=3 is Local Authority column
+  rename(la = value) %>% 
+  select(-years, -key)
+
+tdf %>% filter(grepl("^[cC]hes.*", la) | grepl("^[bB]ed.*", la))
+## Yes they are present
+
+## Clean up 
+rm(list="tdf")
+```
 
 
 
