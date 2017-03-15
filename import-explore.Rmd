@@ -117,8 +117,9 @@ Specific actions:
 2. Remove empty columns.
 3. Remove non-data space below dataset.
 4. Harmonise rows between sheets.
-5. Harmonise columns: from 2013 to 2015 - Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013.
-6. Combine dataframe elements from within list and make tidy.
+5. Combine dataframe elements from within list and make tidy.
+6. Harmonise columns: from 2013 to 2015 - Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013.
+
 
 ### Add year 
 
@@ -298,29 +299,33 @@ tdf %>% filter(grepl("^[cC]hes.*", la) | grepl("^[bB]ed.*", la))
 rm(list="tdf")
 ```
 
+There's no geographic equivalent of the newly created Cheshire and Bedfordshire LAs from before 2009. In order to make the dataset comparable across the whole time series, road lengths from the two new Cheshire and Bedfordshire LAs will be combined together.
+
+```{r combine-LA-rows}
+
+```
 
 
-## Bringing the whole road length dataset together
+### Combine dataset
+
+
+```{r combine-dataset}
+
+
+
+```
+
+
 
 What are the steps that need to be taken to combine all the road length data together into a single dataset?
 
 
+### Harmonise columns
 
-```{r tidy}
-head(rdl.list[[1]])
-lapply()
+From 2013 to 2015, Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013. 
 
-# rdl = do.call("rbind.data.frame", rdl.list) ## combine dfs from list
-```
 
-<!--* The cell range of the dataset (including column names) is:
-  * A7:Z211 for 2005 to 2008; 
-  * A7:Z213 from 2009 to 2012 
-    - This is because:
-    - Rural 'C' and 'U', and Urban 'C' and 'U' roads are separate up to 2013 but combined afterwards.
-    - Cheshire UA is split into Cheshire East UA, and Cheshire West and Chester UA after 2009.
-    - Bedfordshire is split into Bedford UA and Central Bedfordshire UA after 2009.
---> 
+
 
 
 
