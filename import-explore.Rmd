@@ -108,10 +108,13 @@ ons.call <- function(sheet) {
 rdl.list <- lapply(my.sheets, ons.call)
 ```
 
+## Data structure
 
 Each worksheet is read-in to R as a separate dataframe element within a list. These dataframes have slightly different structures, and we need to make them the same in order to combine them all together and make something 'tidy' [@tidy-data] for analysis. 
 
-Specific actions:
+### Actions
+
+From viewing each list dataframe element, some specific actions needed are:
 
 1. Add a year column to each list element.
 2. Remove empty columns.
@@ -189,15 +192,18 @@ rdl.list.full <- lapply(rdl.list.full, function(x) x[!is.na(x$Region),])
 
 Dataframes between 2009-2015 have 206 rows but ones for 2005-2008 have 204 rows. What's causing this? The dataset is a summary of road lengths broken down by Local Authority, so Local Authority should be a 'key' between datasets and any differences in numbers of rows should be reflected in Local Authority values.
 
-
-```{r diffs-toy}
+```{r toy, include=FALSE}
 ## Toy example
 tdf1 <- tibble(key = 1:4, x1 = LETTERS[1:4], x2 = LETTERS[2:5])
 tdf2 <- tibble(key = 1:4, x1 = LETTERS[1:4], x2 = LETTERS[3:6])
 tdf3 <- tibble(key = 1:4, x1 = LETTERS[c(1:3,5)], x2 = LETTERS[4:7])
 toy.list <- list(tdf1,tdf2, tdf3)
 names(toy.list) <- c("2000","2001","2002")
+rm(list = ls(pattern = "tdf"))
+```
 
+
+```{r diffs-toy, include=FALSE}
 ## Use lapply to convert to dataframe
 ## h/t to http://stackoverflow.com/a/29273078/2802810
 toy.df <- lapply(toy.list, `[[`, 2) %>% 
@@ -212,7 +218,7 @@ toy.count <- toy.df %>%
   filter(n < ncol(toy.df))
 
 ## Clean up 
-rm(list = ls(pattern = "^t"))
+rm(list = ls(pattern = "toy.count"))
 ```
 
 
@@ -268,9 +274,6 @@ yrs.9_15 %>%
 rm(list = ls(pattern = "^yrs"))
 ```
 Shows that the LA 'Eilean Siar' (formerly [Western Isles](https://en.wikipedia.org/wiki/Na_h-Eileanan_an_Iar_(UK_Parliament_constituency))) changed its name to 'Na h-Eileanan Siar' in the 2015 worksheet. For consistency we'll change it throughout the whole dataset to Na h-Eileanan Siar.
-  
-* Change Eileanan Siar to Na h-Eileanan Siar
-
 
 ```{r row-diffs-2005-2008_2009-2015}
 ## What cause the 2 row difference between 2005-2008 (204 rows) and 2009-2015 (206 rows)?
@@ -283,6 +286,9 @@ yrs.2009 <- df.years(rdl.list.full, c("2009"), 3) %>% ## c=3 is Local Authority 
 
 ## Now join one to other using Local Authority as key
 setdiff(yrs.2009, yrs.2008)
+
+## Clean up 
+rm(list = ls(pattern = "yrs"))
 ```
 Four Local Authorities appear from 2009-2015 but not 2005-2008. A little research shows that these were formed in 2009 as part of [structural local government changes](https://en.wikipedia.org/wiki/Cheshire_East). Two new LAs by splitting Cheshire and two new ones from splitting Bedfordshire. We'll check the 2008 dataframe to see if these pre-split LAs are present.
 
@@ -296,37 +302,52 @@ tdf %>% filter(grepl("^[cC]hes.*", la) | grepl("^[bB]ed.*", la))
 ## Yes they are present
 
 ## Clean up 
-rm(list="tdf")
+# rm(list="tdf")
 ```
 
-There's no geographic equivalent of the newly created Cheshire and Bedfordshire LAs from before 2009. In order to make the dataset comparable across the whole time series, road lengths from the two new Cheshire and Bedfordshire LAs will be combined together.
+There's no geographic equivalent of the newly created Cheshire and Bedfordshire LAs from before 2009. In order to make the dataset comparable across the whole time series, road lengths from the two post-2008 Cheshire and Bedfordshire LAs will be combined together. This is easier once the data is in a tidy format.
 
-```{r combine-LA-rows}
 
+### Stack datasets
+
+For 2013 and 2014, Rural 'C' and 'U', and Urban 'C' and 'U' roads are combined - they are separate in previous years. We'll stack the dataframes together, including both separate and combined Rural 'C' and 'U' and Urban 'C' and 'U'.
+
+```{r stack-dataset}
+library(data.table)
+rd <- rbindlist(rdl.list.full, use.names = TRUE, fill = TRUE)
+# head(rd)
+View(rd)
 ```
 
 
-### Combine dataset
+### Make tidy
+For tidy datasets:
 
+1. Each variable must have its own column.
+2. Each observation must have its own row.
+3. Each value must have its own cell.
 
-```{r combine-dataset}
+[@tidy-data]
 
+In the `rd` dataset road-type column names are themselves values of the variable 'road-type'. We'll need to gather those column names into a variable 'Road type'. Other columns such as 'ONS Area Code`, 'Region', 'Local authority' 'Year' are all variables in theor own rght and can left as is. Before we do anything else, the columns totalling different road types - "All motorways", "All 'A' roads", "All minor roads", "Major: Trunk roads", "Major: Principal roads", "Minor roads", "Total road length" - will be dropped.
 
+```{r tidy-dataset}
+## Drop 'total' columns
+rd <- rd %>% select(-contains("road"), -contains("All"))
 
+## Tidy data format
+rdt <- rd %>% gather(key = "type", value = "length", -Year, -`ONS Area\nCode`, -Region, -`Local authority`)
+
+head(rdt)
 ```
 
+### Rename road type
 
 
-What are the steps that need to be taken to combine all the road length data together into a single dataset?
+### Change Eileanan Siar to Na h-Eileanan Siar
 
 
-### Harmonise columns
-
-From 2013 to 2015, Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 2013. 
-
-
-
-
+### Combine Cheshire and Bedfordshire LAs before 
 
 
 ## References
@@ -337,5 +358,3 @@ From 2013 to 2015, Rural 'C' and 'U', and Urban 'C' and 'U' are combined from 20
 
 [^1]: [Although they were originally built for bicycles](http://www.roadswerenotbuiltforcars.com/)
 
-
-s
