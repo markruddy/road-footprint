@@ -343,6 +343,16 @@ head(rdt)
 
 ### Rename road type
 
+```{r strip-newline}
+## Strip newline
+rdt$type <- sub("\n", " ", rdt$type)
+
+## Strip apostrophe
+rdt$type <- gsub("'", "", rdt$type)
+
+```
+
+
 
 ### Change Eileanan Siar to Na h-Eileanan Siar
 
