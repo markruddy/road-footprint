@@ -353,8 +353,13 @@ rdt$type <- gsub("'", "", rdt$type)
 ```
 
 
+### Change Eilean Siar to Na h-Eileanan Siar
 
-### Change Eileanan Siar to Na h-Eileanan Siar
+```{r la-change}
+## 
+rdt <- rdt %>% mutate(`Local authority` = sub("Eilean Siar", "Na h-Eileanan Siar", `Local authority`))
+
+```
 
 
 ### Combine Cheshire and Bedfordshire LAs before 
