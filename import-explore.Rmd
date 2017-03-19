@@ -19,7 +19,7 @@ One aspect of how road design impacts people is the amount of space given over t
 Electric or hydrogen-powered vehicles may provide a solution to pollution and transport sector CO2 emissions, but the other [externalities](https://en.wikipedia.org/wiki/Externalities_of_automobiles) associated with motorised transport remain. Electric cars are just as capable of killing and seriously injuring people or dividing neighbourhoods - see this lovely graphic in Figure 1 by @appleyard:1981aa - as petrol-powered ones.
 
 <figure class="align-centre">
-  <a href="xresources/assets/images/geo-science/ois-plot.png"><img src="xresources/assets/images/general/appleyard-1981-fig3.png" alt="@appleyard:1981aa. Intra-street social connections with differing traffic volumes."></a>
+  <a href="xresources/assets/images/general/appleyard-1981-fig3.png"><img src="xresources/assets/images/general/appleyard-1981-fig3.png" alt="@appleyard:1981aa. Intra-street social connections with differing traffic volumes."></a>
   <figcaption>Figure 1. @appleyard:1981aa. Intra-street social connections with differing traffic volumes.</figcaption>
 </figure>
 
@@ -305,7 +305,7 @@ tdf %>% filter(grepl("^[cC]hes.*", la) | grepl("^[bB]ed.*", la))
 # rm(list="tdf")
 ```
 
-There's no geographic equivalent of the newly created Cheshire and Bedfordshire LAs from before 2009. In order to make the dataset comparable across the whole time series, road lengths from the two post-2008 Cheshire and Bedfordshire LAs will be combined together. This is easier once the data is in a tidy format.
+There's no geographic equivalent of the newly created Cheshire and Bedfordshire LAs from before 2009. In order to make the dataset comparable across the whole time series, road lengths from the two post-2008 Cheshire and Bedfordshire LAs would have to be combined together. This is easier once the data is in a tidy format. For the time being it's probably better to focus on 2009-2015 - these LAs can be combined if a time series back to 2005 is needed for some reason.
 
 
 ### Stack datasets
@@ -356,13 +356,9 @@ rdt$type <- gsub("'", "", rdt$type)
 ### Change Eilean Siar to Na h-Eileanan Siar
 
 ```{r la-change}
-## 
 rdt <- rdt %>% mutate(`Local authority` = sub("Eilean Siar", "Na h-Eileanan Siar", `Local authority`))
-
 ```
 
-
-### Combine Cheshire and Bedfordshire LAs before 
 
 
 ## References
